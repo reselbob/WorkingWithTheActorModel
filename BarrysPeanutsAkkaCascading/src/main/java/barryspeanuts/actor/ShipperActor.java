@@ -38,7 +38,7 @@ public class ShipperActor extends AbstractBehavior<Object> {
 
     Date shipDate = new Date();
     logger.info("Shipping the purchase using Shipper: {} on {}.\n", msg.getShipper(), shipDate);
-    // Send a shipping receipt back toa the Customer
+    // Send a shipping receipt back to the Customer
     ShipperActor.ShippingReceipt shippingReceipt =
         new ShipperActor.ShippingReceipt(msg.getShipper(), msg.getPurchaseItems(), shipDate);
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
