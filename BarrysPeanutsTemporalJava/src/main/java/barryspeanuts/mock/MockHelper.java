@@ -5,7 +5,7 @@ import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 
-public class mockHelper {
+public class MockHelper {
   public static Address getAddress() {
     return new Address(
         "1600 Pennsylvania Avenue NW.", "West Wing", "Washington", "D.C.", "20500", "USA");

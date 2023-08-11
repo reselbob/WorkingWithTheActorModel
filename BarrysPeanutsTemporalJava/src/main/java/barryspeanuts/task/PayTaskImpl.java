@@ -3,7 +3,7 @@ package barryspeanuts.task;
 import barryspeanuts.ShoppingCartActivities;
 import barryspeanuts.ShoppingCartWorkflow;
 import barryspeanuts.ShoppingCartWorkflowImpl;
-import barryspeanuts.mock.mockHelper;
+import barryspeanuts.mock.MockHelper;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Purchase;
 import io.temporal.workflow.Workflow;
@@ -21,7 +21,7 @@ public class PayTaskImpl implements WorkflowTask {
   public void process(ShoppingCartWorkflow shoppingCartWorkflow) {
     ShoppingCartActivities activities = shoppingCartWorkflow.queryActivities();
     CreditCard creditCard =
-        mockHelper.getCreditCard(
+        MockHelper.getCreditCard(
             this.purchase.getPurchaseItems().get(0).getCustomer().getFirstName(),
             this.purchase.getPurchaseItems().get(0).getCustomer().getLastName());
     logger.info("{}is Paying on CreditCard for {}", PayTaskImpl.class, creditCard.getFullName());

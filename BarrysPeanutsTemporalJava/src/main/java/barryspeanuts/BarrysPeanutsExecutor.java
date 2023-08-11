@@ -1,6 +1,5 @@
 package barryspeanuts;
-
-import barryspeanuts.mock.mockHelper;
+import barryspeanuts.mock.MockHelper;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowException;
@@ -63,7 +62,7 @@ public class BarrysPeanutsExecutor {
     ShoppingCartWorkflow wf = client.newWorkflowStub(ShoppingCartWorkflow.class, options);
     try {
 
-      PurchaseItem purchaseItem = mockHelper.getPurchaseItem();
+      PurchaseItem purchaseItem = MockHelper.getPurchaseItem();
       WorkflowClient.start(wf::startWorkflow);
       // Add some purchase items to the workflow for processing
       wf.addItem(purchaseItem);
