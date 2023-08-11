@@ -9,6 +9,10 @@ public class Purchase {
   List<PurchaseItem> purchaseItems;
   Date purchaseDate;
 
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public Purchase() {}
 
   public Purchase(List<PurchaseItem> purchaseItems, Date purchaseDate) {

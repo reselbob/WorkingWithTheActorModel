@@ -1,12 +1,12 @@
 package barryspeanuts.msg;
 
 public class Address {
-  private String address1;
-  private String address2;
-  private String city;
-  private String stateProvince;
-  private String zipRegionCode;
-  private String countryCode;
+  private final String address1;
+  private final String address2;
+  private final String city;
+  private final String stateProvince;
+  private final String zipRegionCode;
+  private final String countryCode;
 
   public Address(
       String address1,
@@ -27,47 +27,23 @@ public class Address {
     return address1;
   }
 
-  public void setAddress1(String address1) {
-    this.address1 = address1;
-  }
-
   public String getAddress2() {
     return address2;
-  }
-
-  public void setAddress2(String address2) {
-    this.address2 = address2;
   }
 
   public String getCity() {
     return city;
   }
 
-  public void setCity(String city) {
-    this.city = city;
-  }
-
   public String getStateProvince() {
     return stateProvince;
-  }
-
-  public void setStateProvince(String stateProvince) {
-    this.stateProvince = stateProvince;
   }
 
   public String getZipRegionCode() {
     return zipRegionCode;
   }
 
-  public void setZipRegionCode(String zipRegionCode) {
-    this.zipRegionCode = zipRegionCode;
-  }
-
   public String getCountryCode() {
     return countryCode;
-  }
-
-  public void setCountryCode(String countryCode) {
-    this.countryCode = countryCode;
   }
 }

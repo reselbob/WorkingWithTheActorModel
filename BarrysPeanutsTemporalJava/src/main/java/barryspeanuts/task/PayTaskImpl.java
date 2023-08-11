@@ -24,7 +24,7 @@ public class PayTaskImpl implements WorkflowTask {
         MockHelper.getCreditCard(
             this.purchase.getPurchaseItems().get(0).getCustomer().getFirstName(),
             this.purchase.getPurchaseItems().get(0).getCustomer().getLastName());
-    logger.info("{}is Paying on CreditCard for {}", PayTaskImpl.class, creditCard.getFullName());
+    logger.info("{} is Paying on CreditCard {}", creditCard.getFullName(), creditCard.getNumber());
 
     activities.pay(this.purchase, creditCard);
   }

@@ -6,7 +6,7 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.PurchaseItem;
-import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +36,13 @@ public class CheckOutActor extends AbstractBehavior<Object> {
   }
 
   public static class StartCheckout {
-    ArrayList<PurchaseItem> purchaseItems;
+    private final List<PurchaseItem> purchaseItems;
 
-    public StartCheckout(ArrayList<PurchaseItem> purchaseItems) {
+    public StartCheckout(List<PurchaseItem> purchaseItems) {
       this.purchaseItems = purchaseItems;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
   }

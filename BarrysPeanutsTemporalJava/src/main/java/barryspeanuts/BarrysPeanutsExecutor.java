@@ -1,4 +1,5 @@
 package barryspeanuts;
+
 import barryspeanuts.mock.MockHelper;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
@@ -86,7 +87,7 @@ public class BarrysPeanutsExecutor {
       // TODO Create a compensation for Ship
 
       List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
-      logger.info("The count of purchase items  is {}", purchaseItems.toArray().length);
+      logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
       wf.emptyCart(String.format("Workflow ID [%s] is emptying cart", WORKFLOW_ID));
@@ -95,7 +96,7 @@ public class BarrysPeanutsExecutor {
       purchaseItems = wf.queryPurchaseItems();
 
       logger.info(
-          "The count of purchase items  after the cart is emptied is {}",
+          "The count of purchase items after the cart is emptied is {}",
           purchaseItems.toArray().length);
 
     } catch (WorkflowException e) {

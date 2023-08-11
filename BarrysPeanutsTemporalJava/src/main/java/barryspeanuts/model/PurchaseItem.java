@@ -16,6 +16,10 @@ public class PurchaseItem {
   Optional<Address> shippingAddress;
   Date purchaseDate;
 
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public PurchaseItem() {}
 
   public PurchaseItem(

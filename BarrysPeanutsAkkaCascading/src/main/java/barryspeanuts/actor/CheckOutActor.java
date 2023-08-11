@@ -9,12 +9,12 @@ import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.CreditCard;
 import barryspeanuts.msg.Customer;
 import barryspeanuts.msg.PurchaseItem;
-import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CheckOutActor extends AbstractBehavior<Object> {
-  Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private CheckOutActor(ActorContext<Object> context) {
     super(context);
@@ -24,19 +24,16 @@ public class CheckOutActor extends AbstractBehavior<Object> {
     return Behaviors.setup(CheckOutActor::new);
   }
 
-  public static Behavior<Object> behavior() {
-    return Behaviors.setup(CheckOutActor::new);
-  }
-
   @Override
   public Receive<Object> createReceive() {
     return newReceiveBuilder().onMessage(StartCheckout.class, this::handleStartCheckout).build();
   }
 
   private Behavior<Object> handleStartCheckout(StartCheckout msg) {
-    logger.info("{} {} is Checking Out a purchase and preparing a payment",
-            msg.getCustomer().getFirstName(),
-            msg.getCustomer().getLastName());
+    logger.info(
+        "{} {} is Checking Out a purchase and preparing a payment",
+        msg.getCustomer().getFirstName(),
+        msg.getCustomer().getLastName());
     PaymentActor.PaymentInfo paymentInfo =
         new PaymentActor.PaymentInfo(
             msg.getCustomer(), msg.getCreditCard(), msg.getPurchaseItems());
@@ -47,18 +44,18 @@ public class CheckOutActor extends AbstractBehavior<Object> {
   }
 
   public static class StartCheckout {
-    ArrayList<PurchaseItem> purchaseItems;
-    CreditCard creditCard;
-    Customer customer;
+    private final List<PurchaseItem> purchaseItems;
+    private final CreditCard creditCard;
+    private final Customer customer;
 
     public StartCheckout(
-        ArrayList<PurchaseItem> purchaseItems, CreditCard creditCard, Customer customer) {
+        List<PurchaseItem> purchaseItems, CreditCard creditCard, Customer customer) {
       this.purchaseItems = purchaseItems;
       this.creditCard = creditCard;
       this.customer = customer;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
 

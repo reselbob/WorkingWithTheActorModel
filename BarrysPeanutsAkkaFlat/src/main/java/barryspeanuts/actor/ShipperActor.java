@@ -6,10 +6,9 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.PurchaseItem;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +46,11 @@ public class ShipperActor extends AbstractBehavior<Object> {
 
   public static class ShipmentInfo {
 
-    UUID id;
-    String shipper;
-    ArrayList<PurchaseItem> purchaseItems;
+    private final UUID id;
+    private final String shipper;
+    private final List<PurchaseItem> purchaseItems;
 
-    public ShipmentInfo(String shipper, ArrayList<PurchaseItem> purchaseItems) {
+    public ShipmentInfo(String shipper, List<PurchaseItem> purchaseItems) {
       this.id = UUID.randomUUID();
       this.shipper = shipper;
       this.purchaseItems = purchaseItems;
@@ -65,7 +64,7 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
   }
@@ -73,10 +72,10 @@ public class ShipperActor extends AbstractBehavior<Object> {
   public static class ShippingReceipt {
 
     String shipper;
-    Vector<PurchaseItem> purchaseItems;
+    List<PurchaseItem> purchaseItems;
     Date shipDate;
 
-    public ShippingReceipt(String shipper, Vector<PurchaseItem> purchaseItems, Date shipDate) {
+    public ShippingReceipt(String shipper, List<PurchaseItem> purchaseItems, Date shipDate) {
       this.shipper = shipper;
       this.purchaseItems = purchaseItems;
       this.shipDate = shipDate;
@@ -86,7 +85,7 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    public Vector<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
 

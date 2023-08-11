@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
-  Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
   ArrayList<PurchaseItem> purchaseItems;
 
   private ShoppingCartActor(ActorContext<Object> context) {
@@ -79,7 +79,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   public static class AddItem {
-    PurchaseItem purchaseItem;
+    private final PurchaseItem purchaseItem;
 
     public AddItem(PurchaseItem purchaseItem) {
       this.purchaseItem = purchaseItem;

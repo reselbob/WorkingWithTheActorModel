@@ -11,8 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class App {
+
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+
   public static void main(String[] args) throws InterruptedException, TimeoutException {
-    Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+
     logger.info("{} is starting Barry's Gourmet Peanuts", App.class);
     Customer customer = MockHelper.getCustomer();
     Address address = MockHelper.getAddress();

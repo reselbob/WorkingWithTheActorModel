@@ -25,7 +25,7 @@ public class CheckOutTaskImpl implements WorkflowTask {
             "%s %s",
             shoppingCartWorkflow.queryPurchaseItems().get(0).getCustomer().getFirstName(),
             shoppingCartWorkflow.queryPurchaseItems().get(0).getCustomer().getLastName());
-    logger.info("{} is checking out customer {}", CheckOutTaskImpl.class, fullName);
+    logger.info("{} is checking out.", fullName);
 
     // call the activity
     activities.checkOut(this.purchase.getPurchaseItems());

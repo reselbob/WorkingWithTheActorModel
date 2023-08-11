@@ -14,13 +14,14 @@ import barryspeanuts.msg.Customer;
 import barryspeanuts.msg.PurchaseItem;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
 
   private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
-  ArrayList<PurchaseItem> purchaseItems;
+  private List<PurchaseItem> purchaseItems;
 
   private ShoppingCartActor(ActorContext<Object> context) {
     super(context);

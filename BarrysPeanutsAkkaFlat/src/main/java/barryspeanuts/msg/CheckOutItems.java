@@ -1,15 +1,15 @@
 package barryspeanuts.msg;
 
-import java.util.Vector;
+import java.util.List;
 
 public class CheckOutItems {
-  public Vector<PurchaseItem> items;
+  private final List<PurchaseItem> items;
 
-  public CheckOutItems(Vector<PurchaseItem> items) {
+  public CheckOutItems(List<PurchaseItem> items) {
     this.items = items;
   }
 
-  public Vector<PurchaseItem> getItems() {
+  public List<PurchaseItem> getItems() {
     return items;
   }
 }

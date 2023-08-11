@@ -7,10 +7,8 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.CreditCard;
 import barryspeanuts.msg.Customer;
-import barryspeanuts.msg.PurchaseItem;
 import java.util.Date;
 import java.util.UUID;
-import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +50,10 @@ public class PaymentActor extends AbstractBehavior<Object> {
 
   public static class PaymentInfo {
 
-    UUID id;
-    Customer customer;
-    Vector<PurchaseItem> purchaseItems;
-    CreditCard creditCard;
-    double paymentAmount;
+    private final UUID id;
+    private final Customer customer;
+    private final CreditCard creditCard;
+    private final double paymentAmount;
 
     public PaymentInfo(Customer customer, CreditCard creditCard, double paymentAmount) {
       this.id = UUID.randomUUID();
@@ -83,11 +80,11 @@ public class PaymentActor extends AbstractBehavior<Object> {
   }
 
   public static class PaymentReceipt {
-    UUID id;
-    Customer customer;
-    Date paymentDate;
-    String creditCardNumber;
-    double amount;
+    private final UUID id;
+    private final Customer customer;
+    private final Date paymentDate;
+    private final String creditCardNumber;
+    private final double amount;
 
     PaymentReceipt(Customer customer, Date paymentDate, String creditCardNumber, double amount) {
       this.id = UUID.randomUUID();

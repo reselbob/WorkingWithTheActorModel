@@ -10,24 +10,20 @@ import barryspeanuts.helper.MockHelper;
 import barryspeanuts.msg.CreditCard;
 import barryspeanuts.msg.Customer;
 import barryspeanuts.msg.PurchaseItem;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PaymentActor extends AbstractBehavior<Object> {
-  Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private PaymentActor(ActorContext<Object> context) {
     super(context);
   }
 
   public static Behavior<Object> create() {
-    return Behaviors.setup(PaymentActor::new);
-  }
-
-  public static Behavior<Object> behavior() {
     return Behaviors.setup(PaymentActor::new);
   }
 
@@ -66,14 +62,13 @@ public class PaymentActor extends AbstractBehavior<Object> {
 
   public static class PaymentInfo {
 
-    UUID id;
-    Customer customer;
-    ArrayList<PurchaseItem> purchaseItems;
-    CreditCard creditCard;
-    double paymentAmount;
+    private final UUID id;
+    private final Customer customer;
+    private final List<PurchaseItem> purchaseItems;
+    private final CreditCard creditCard;
+    private double paymentAmount;
 
-    public PaymentInfo(
-        Customer customer, CreditCard creditCard, ArrayList<PurchaseItem> purchaseItems) {
+    public PaymentInfo(Customer customer, CreditCard creditCard, List<PurchaseItem> purchaseItems) {
       this.id = UUID.randomUUID();
       this.customer = customer;
       this.creditCard = creditCard;
@@ -88,7 +83,7 @@ public class PaymentActor extends AbstractBehavior<Object> {
       return customer;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
 

@@ -11,8 +11,8 @@ public class PurchaseItem {
   private final int packageSize;
   private final int quantity;
   private final double price;
-  private Address billingAddress;
-  private Address shippingAddress;
+  private final Address billingAddress;
+  private final Address shippingAddress;
   private Date shipDate;
 
   public PurchaseItem(
@@ -63,16 +63,8 @@ public class PurchaseItem {
     return billingAddress;
   }
 
-  public void setBillingAddress(Address billingAddress) {
-    this.billingAddress = billingAddress;
-  }
-
   public Address getShippingAddress() {
     return shippingAddress;
-  }
-
-  public void setShippingAddress(Address shippingAddress) {
-    this.shippingAddress = shippingAddress;
   }
 
   public Date getShipDate() {

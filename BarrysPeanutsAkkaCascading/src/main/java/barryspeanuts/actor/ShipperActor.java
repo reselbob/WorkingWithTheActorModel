@@ -7,24 +7,20 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.PurchaseItem;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShipperActor extends AbstractBehavior<Object> {
-  Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private ShipperActor(ActorContext<Object> context) {
     super(context);
   }
 
   public static Behavior<Object> create() {
-    return Behaviors.setup(ShipperActor::new);
-  }
-
-  public static Behavior<Object> behavior() {
     return Behaviors.setup(ShipperActor::new);
   }
 
@@ -50,9 +46,9 @@ public class ShipperActor extends AbstractBehavior<Object> {
 
     UUID id;
     String shipper;
-    ArrayList<PurchaseItem> purchaseItems;
+    List<PurchaseItem> purchaseItems;
 
-    public ShipmentInfo(String shipper, ArrayList<PurchaseItem> purchaseItems) {
+    public ShipmentInfo(String shipper, List<PurchaseItem> purchaseItems) {
       this.id = UUID.randomUUID();
       this.shipper = shipper;
       this.purchaseItems = purchaseItems;
@@ -66,18 +62,18 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
   }
 
   public static class ShippingReceipt {
 
-    String shipper;
-    ArrayList<PurchaseItem> purchaseItems;
-    Date shipDate;
+    private final String shipper;
+    private final List<PurchaseItem> purchaseItems;
+    private final Date shipDate;
 
-    public ShippingReceipt(String shipper, ArrayList<PurchaseItem> purchaseItems, Date shipDate) {
+    public ShippingReceipt(String shipper, List<PurchaseItem> purchaseItems, Date shipDate) {
       this.shipper = shipper;
       this.purchaseItems = purchaseItems;
       this.shipDate = shipDate;
@@ -87,7 +83,7 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return purchaseItems;
     }
 

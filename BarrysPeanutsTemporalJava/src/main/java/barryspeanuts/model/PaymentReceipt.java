@@ -5,12 +5,16 @@ import java.util.UUID;
 
 public class PaymentReceipt {
 
-  UUID id;
-  Purchase purchase;
-  Date paymentDate;
-  CreditCard creditCard;
-  UUID transactionId;
+  private UUID id;
+  private Purchase purchase;
+  private Date paymentDate;
+  private CreditCard creditCard;
+  private UUID transactionId;
 
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public PaymentReceipt() {}
 
   public PaymentReceipt(

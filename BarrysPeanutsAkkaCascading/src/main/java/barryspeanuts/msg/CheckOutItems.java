@@ -1,15 +1,15 @@
 package barryspeanuts.msg;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CheckOutItems {
-  public ArrayList<PurchaseItem> items;
+  public List<PurchaseItem> items;
 
-  public CheckOutItems(ArrayList<PurchaseItem> items) {
+  public CheckOutItems(List<PurchaseItem> items) {
     this.items = items;
   }
 
-  public ArrayList<PurchaseItem> getItems() {
+  public List<PurchaseItem> getItems() {
     return items;
   }
 }

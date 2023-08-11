@@ -9,6 +9,10 @@ public class ShippingReceipt {
   Date shipDate;
   String shipper;
 
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public ShippingReceipt() {}
 
   public ShippingReceipt(Purchase purchase, String shipper) {

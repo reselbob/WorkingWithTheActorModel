@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.UUID;
 
 public class CheckOutReceipt {
-  UUID id;
-  Date confirmationDate;
-  Purchase purchase;
+  private UUID id;
+  private Date confirmationDate;
+  private Purchase purchase;
 
-  ;
-
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public CheckOutReceipt() {}
 
   public CheckOutReceipt(Purchase purchase, Date confirmationDate) {
@@ -28,5 +30,9 @@ public class CheckOutReceipt {
 
   public Purchase getPurchase() {
     return this.purchase;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 }

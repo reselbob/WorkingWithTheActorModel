@@ -1,12 +1,16 @@
 package barryspeanuts.model;
 
 public class CreditCard {
-  String fullName;
-  String number;
-  int expirationMonth;
-  int expirationYear;
-  int securityCode;
+  private String fullName;
+  private String number;
+  private int expirationMonth;
+  private int expirationYear;
+  private int securityCode;
 
+  /*
+  Add a parameterless constructor and setters to avoid complaints
+  by the serializer.
+  */
   public CreditCard() {}
 
   public CreditCard(
@@ -36,5 +40,9 @@ public class CreditCard {
 
   public int getSecurityCode() {
     return securityCode;
+  }
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 }

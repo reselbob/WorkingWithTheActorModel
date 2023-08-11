@@ -8,21 +8,18 @@ import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.PurchaseItem;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CustomerActor extends AbstractBehavior<Object> {
-  Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private CustomerActor(ActorContext<Object> context) {
     super(context);
   }
 
   public static Behavior<Object> create() {
-    return Behaviors.setup(CustomerActor::new);
-  }
-
-  public static Behavior<Object> behavior() {
     return Behaviors.setup(CustomerActor::new);
   }
 
@@ -48,7 +45,7 @@ public class CustomerActor extends AbstractBehavior<Object> {
 
   private Behavior<Object> handleShippingReceipt(ShipperActor.ShippingReceipt msg) {
     Date today = new Date();
-    ArrayList<PurchaseItem> items = msg.getPurchaseItems();
+    List<PurchaseItem> items = msg.getPurchaseItems();
     String firstName = null;
     String lastName = null;
     String shipper = msg.getShipper();
@@ -68,13 +65,13 @@ public class CustomerActor extends AbstractBehavior<Object> {
   }
 
   public static class CreditCardRequest {
-    ArrayList<PurchaseItem> purchaseItems;
+    private final List<PurchaseItem> purchaseItems;
 
     public CreditCardRequest(ArrayList<PurchaseItem> purchaseItems) {
       this.purchaseItems = purchaseItems;
     }
 
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
       return this.purchaseItems;
     }
   }

@@ -3,8 +3,8 @@ package barryspeanuts.msg;
 import akka.actor.typed.ActorRef;
 
 public class ConfirmationMessage {
-  final String content;
-  final akka.actor.typed.ActorRef<Confirmation> replyTo;
+  private final String content;
+  private final ActorRef<Confirmation> replyTo;
 
   public ConfirmationMessage(String content, akka.actor.typed.ActorRef<Confirmation> replyTo) {
     this.content = content;
