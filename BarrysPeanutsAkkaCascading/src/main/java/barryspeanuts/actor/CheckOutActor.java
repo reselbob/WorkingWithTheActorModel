@@ -34,7 +34,9 @@ public class CheckOutActor extends AbstractBehavior<Object> {
   }
 
   private Behavior<Object> handleStartCheckout(StartCheckout msg) {
-    logger.info("{} is Checking Out a purchase and preparing a payment", CheckOutActor.class);
+    logger.info("{} {} is Checking Out a purchase and preparing a payment",
+            msg.getCustomer().getFirstName(),
+            msg.getCustomer().getLastName());
     PaymentActor.PaymentInfo paymentInfo =
         new PaymentActor.PaymentInfo(
             msg.getCustomer(), msg.getCreditCard(), msg.getPurchaseItems());
