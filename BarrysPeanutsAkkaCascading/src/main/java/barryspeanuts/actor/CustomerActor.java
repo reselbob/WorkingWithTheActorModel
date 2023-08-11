@@ -35,11 +35,10 @@ public class CustomerActor extends AbstractBehavior<Object> {
   }
 
   private Behavior<Object> handlePaymentReceipt(PaymentActor.PaymentReceipt msg) {
-    String fullName =
-        String.format("%s %s", msg.getCustomer().getFirstName(), msg.getCustomer().getLastName());
     logger.info(
-        "Customer {} processed PaymentInfo Receipt with ID: {} on {} with CC Number: {} for the amount of: {}",
-        fullName,
+        "Customer {} {} processed PaymentInfo Receipt with ID: {} on {} with CC Number: {} for the amount of: {}",
+        msg.getCustomer().getFirstName(),
+        msg.getCustomer().getLastName(),
         msg.getId(),
         msg.getPaymentDate(),
         msg.getCreditCardNumber(),
