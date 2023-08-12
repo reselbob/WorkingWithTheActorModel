@@ -2,94 +2,91 @@ package barryspeanuts;
 
 import barryspeanuts.model.Purchase;
 import barryspeanuts.model.PurchaseItem;
-import barryspeanuts.task.CheckOutTaskImpl;
-import barryspeanuts.task.PayTaskImpl;
-import barryspeanuts.task.ShipTaskImpl;
-import barryspeanuts.task.WorkflowTask;
 import io.temporal.workflow.Workflow;
 import io.temporal.workflow.WorkflowQueue;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+
 import org.slf4j.Logger;
 
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   private static final Logger logger = Workflow.getLogger(ShoppingCartWorkflowImpl.class);
+
+  List<String> messageQueue = new ArrayList<>(20);
+  boolean exit = false;
   ShoppingCartActivities activities = new ShoppingCartActivitiesImpl();
-  List<PurchaseItem> purchaseItems;
-  private WorkflowQueue<WorkflowTask> queue = Workflow.newWorkflowQueue(1024);
+  List<PurchaseItem> purchaseItems = new ArrayList<>();
+  private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
   @Override
-  public void startWorkflow() {
-    logger.info("Starting Workflow for Barry's Peanuts");
-    while (true) {
-      if (Workflow.getInfo().getHistoryLength() > 2000) {
-        // do continue as new here
-        logger.info("Workflow history greater than 2000");
-        // System.out.println("Workflow history greater than 2000");
-      }
+  public List<String> startWorkflow() {
 
-      WorkflowTask task = this.queue.cancellablePoll(Duration.ofDays(30));
-      if (task == null) {
-        logger.info("Breaking task");
-        break;
+    logger.info("Starting Workflow for Barry's Peanuts");
+
+    List<String> receivedMessages = new ArrayList<>(20);
+
+    while (true) {
+      Workflow.await(() -> !messageQueue.isEmpty() || exit);
+      //this.queue.poll(Duration.ofDays(30));
+      if (messageQueue.isEmpty() && exit) {
+        // no messages in queue and exit signal was sent, return the received messages
+        return receivedMessages;
       }
-      task.process(this);
+      String message = messageQueue.remove(0);
+      receivedMessages.add(message);
     }
   }
 
   @Override
-  public ShoppingCartActivities queryActivities() {
-    return this.activities;
-  }
-
-  @Override
-  public List<PurchaseItem> queryPurchaseItems() {
+  public List<PurchaseItem> queryPurchaseItems(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
     return this.purchaseItems;
   }
 
+
   @Override
-  public void addItem(PurchaseItem purchaseItem) {
-    if (this.purchaseItems == null) {
-      this.purchaseItems = new ArrayList<>();
-    }
+  public void addItem(String workflowId, PurchaseItem purchaseItem) {
+    if(workflowId == null) throw new NullPointerException();
     this.purchaseItems.add(purchaseItem);
   }
 
   @Override
-  public void removeItem(PurchaseItem purchaseItem) {
-    if (this.purchaseItems != null) {
-      this.purchaseItems.remove(purchaseItem);
-    }
+  public void removeItem(String workflowId,PurchaseItem purchaseItem) {
+    if(workflowId == null) throw new NullPointerException();
+    this.purchaseItems.remove(purchaseItem);
   }
 
-  public void clearItems() {
+  @Override
+  public void checkOut(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
+    logger.info("Checking Out according to WorkflowId: {}", workflowId);
+  }
+
+  @Override
+  public void pay(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
+    logger.info("Paying according to WorkflowId: {}", workflowId);
+  }
+
+  @Override
+  public void ship(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
+    logger.info("Shipping according to WorkflowId: {}", workflowId);
+  }
+
+  @Override
+  public void resetShoppingCart(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
+    logger.info("Resetting Shopping Cart according to WorkflowId: {}", workflowId);
     this.purchaseItems = new ArrayList<>();
   }
 
-  @Override
-  public void checkOut(String message) {
-    this.queue.put(new CheckOutTaskImpl(this.getPurchase()));
-  }
+  Purchase getPurchase(String workflowId) {
+    if(workflowId == null) throw new NullPointerException();
 
-  @Override
-  public void pay(String message) {
-    this.queue.put(new PayTaskImpl(this.getPurchase()));
-  }
-
-  @Override
-  public void ship(String message) {
-    this.queue.put(new ShipTaskImpl(this.getPurchase(), "FEDEX"));
-  }
-
-  @Override
-  public void emptyCart(String message) {
-    this.purchaseItems = new ArrayList<>();
-  }
-
-  Purchase getPurchase() {
-    List<PurchaseItem> items = queryPurchaseItems();
+    List<PurchaseItem> items = queryPurchaseItems(workflowId);
     return new Purchase(items, new Date());
   }
 }

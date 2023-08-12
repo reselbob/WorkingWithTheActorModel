@@ -66,34 +66,34 @@ public class BarrysPeanutsExecutor {
       PurchaseItem purchaseItem = MockHelper.getPurchaseItem();
       WorkflowClient.start(wf::startWorkflow);
       // Add some purchase items to the workflow for processing
-      wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
+      wf.addItem(WORKFLOW_ID, purchaseItem);
+      wf.addItem(WORKFLOW_ID, purchaseItem);
+      wf.addItem(WORKFLOW_ID, purchaseItem);
+      wf.addItem(WORKFLOW_ID, purchaseItem);
 
       // Checkout
-      wf.checkOut(String.format("Workflow ID [%s] is checking out", WORKFLOW_ID));
+      wf.checkOut(WORKFLOW_ID);
       // TODO Use the Temporal Saga Library
       //
       // (https://www.javadoc.io/static/io.temporal/temporal-sdk/1.0.0/io/temporal/workflow/Saga.html)
       //  to create a compensation if something goes wrong with Checkout
 
       // Pay
-      wf.pay(String.format("Workflow ID [%s] is paying", WORKFLOW_ID));
+      wf.pay(WORKFLOW_ID);
       // TODO Create a compensation for Pay
 
       // Ship
-      wf.ship(String.format("Workflow ID [%s] is shipping", WORKFLOW_ID));
+      wf.ship(WORKFLOW_ID);
       // TODO Create a compensation for Ship
 
-      List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
+      List<PurchaseItem> purchaseItems = wf.queryPurchaseItems(WORKFLOW_ID);
       logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
-      wf.emptyCart(String.format("Workflow ID [%s] is emptying cart", WORKFLOW_ID));
+      wf.resetShoppingCart(WORKFLOW_ID);
       // TODO Create a compensation for Empty Cart
 
-      purchaseItems = wf.queryPurchaseItems();
+      purchaseItems = wf.queryPurchaseItems(WORKFLOW_ID);
 
       logger.info(
           "The count of purchase items after the cart is emptied is {}",

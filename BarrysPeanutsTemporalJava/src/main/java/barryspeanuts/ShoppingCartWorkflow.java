@@ -10,32 +10,26 @@ import java.util.List;
 @WorkflowInterface
 public interface ShoppingCartWorkflow {
   @WorkflowMethod
-  void startWorkflow();
+  List<String> startWorkflow();
 
   @QueryMethod
-  ShoppingCartActivities queryActivities();
-
-  @QueryMethod
-  List<PurchaseItem> queryPurchaseItems();
+  List<PurchaseItem> queryPurchaseItems(String workflowId);
 
   @SignalMethod
-  void addItem(PurchaseItem purchaseItem);
+  void addItem(String workflowId, PurchaseItem purchaseItem);
 
   @SignalMethod
-  void removeItem(PurchaseItem purchaseItem);
+  void removeItem(String workflowId, PurchaseItem purchaseItem);
 
   @SignalMethod
-  void clearItems();
+  void checkOut(String workflowId);
 
   @SignalMethod
-  void checkOut(String message);
+  void pay(String workflowId);
 
   @SignalMethod
-  void pay(String message);
+  void ship(String workflowId);
 
   @SignalMethod
-  void ship(String message);
-
-  @SignalMethod
-  void emptyCart(String message);
+  void resetShoppingCart(String workflowId);
 }
