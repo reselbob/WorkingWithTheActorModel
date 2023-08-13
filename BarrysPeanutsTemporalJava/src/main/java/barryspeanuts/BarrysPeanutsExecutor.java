@@ -90,7 +90,7 @@ public class BarrysPeanutsExecutor {
       // TODO Create a compensation for Pay
 
       // Ship
-      wf.ship(purchase, "FEDEXW");
+      wf.ship(purchase, "FEDEX");
       // TODO Create a compensation for Ship
 
       purchaseItems = wf.queryPurchaseItems();
