@@ -61,7 +61,7 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void completeShoppingCart() {
-    logger.info("Shopping Cart process");
+    logger.info("Clearing the purchase items and completing the shopping cart process");
     this.purchaseItems = new ArrayList<>();
   }
 
