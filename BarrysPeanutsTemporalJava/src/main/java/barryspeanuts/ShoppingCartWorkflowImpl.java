@@ -60,16 +60,13 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   }
 
   /**
-   *
-   * @param purchaseItems,  an empty List<PurchaseItem>
+   * @param purchaseItems, an empty List<PurchaseItem>
    */
   @Override
   public void resetShoppingCart(List<PurchaseItem> purchaseItems) {
     logger.info("Clearing the purchase items and completing the shopping cart process");
     this.purchaseItems = purchaseItems;
   }
-
-
 
   /** This is convenience signal to shut down the workflow */
   @Override
