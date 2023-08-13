@@ -33,7 +33,7 @@ public interface ShoppingCartWorkflow {
   void ship(Purchase purchase, String shipper);
 
   @SignalMethod
-  void completeShoppingCart();
+  void resetShoppingCart(List<PurchaseItem> purchaseItems);
 
   @SignalMethod
   void exit();

@@ -12,6 +12,7 @@ import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -96,7 +97,7 @@ public class BarrysPeanutsExecutor {
       logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
-      wf.completeShoppingCart();
+      wf.resetShoppingCart(new ArrayList<>());
       // TODO Create a compensation for completing the Shopping Cart
 
       purchaseItems = wf.queryPurchaseItems();
