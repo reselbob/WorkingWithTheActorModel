@@ -10,7 +10,7 @@ import java.util.List;
 @WorkflowInterface
 public interface ShoppingCartWorkflow {
   @WorkflowMethod
-  List<String> startWorkflow();
+  void startWorkflow();
 
   @QueryMethod
   List<PurchaseItem> queryPurchaseItems(String workflowId);

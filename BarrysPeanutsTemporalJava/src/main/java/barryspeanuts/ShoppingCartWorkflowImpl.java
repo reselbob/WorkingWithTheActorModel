@@ -19,7 +19,7 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
   @Override
-  public List<String> startWorkflow() {
+  public void startWorkflow() {
 
     logger.info("Starting Workflow for Barry's Peanuts");
     while (true) {
