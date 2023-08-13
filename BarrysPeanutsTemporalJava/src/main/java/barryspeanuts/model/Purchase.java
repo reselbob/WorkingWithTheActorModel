@@ -33,5 +33,4 @@ public class Purchase {
   public UUID getId() {
     return id;
   }
-
 }

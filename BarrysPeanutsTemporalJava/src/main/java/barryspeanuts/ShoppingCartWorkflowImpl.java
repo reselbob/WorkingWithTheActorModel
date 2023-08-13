@@ -48,9 +48,10 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void pay(Purchase purchase, CreditCard creditCard) {
-    logger.info("Paying for purchase] id {} using credit card number {}",
-            purchase.getId(),
-            creditCard.getNumber());
+    logger.info(
+        "Paying for purchase] id {} using credit card number {}",
+        purchase.getId(),
+        creditCard.getNumber());
   }
 
   @Override
@@ -64,11 +65,9 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
     this.purchaseItems = new ArrayList<>();
   }
 
-  /**
-   * This is convenience signal to shut down the workflow
-   */
+  /** This is convenience signal to shut down the workflow */
   @Override
-  public void exit(){
+  public void exit() {
     exit = true;
   }
 }

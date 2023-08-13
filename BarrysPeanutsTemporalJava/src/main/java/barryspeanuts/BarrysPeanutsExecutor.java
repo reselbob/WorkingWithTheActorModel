@@ -64,7 +64,7 @@ public class BarrysPeanutsExecutor {
       PurchaseItem purchaseItem = MockHelper.getPurchaseItem();
       WorkflowClient.start(wf::startWorkflow);
       // Add some purchase items to the workflow for processing
-      wf.addItem( purchaseItem);
+      wf.addItem(purchaseItem);
       wf.addItem(purchaseItem);
       wf.addItem(purchaseItem);
       wf.addItem(purchaseItem);
@@ -72,7 +72,6 @@ public class BarrysPeanutsExecutor {
       List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
 
       Purchase purchase = new Purchase(purchaseItems);
-
 
       // Checkout
       wf.checkOut(purchase);
