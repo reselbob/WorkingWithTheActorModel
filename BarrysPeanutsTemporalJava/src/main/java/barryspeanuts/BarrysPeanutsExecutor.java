@@ -39,10 +39,6 @@ public class BarrysPeanutsExecutor {
     // Workflows are stateful. So you need a type to create instances.
     worker.registerWorkflowImplementationTypes(ShoppingCartWorkflowImpl.class);
 
-    // Activities are stateless and thread safe. So a shared instance is used.
-    ShoppingCartActivities shoppingCartActivities = new ShoppingCartActivitiesImpl();
-    worker.registerActivitiesImplementations(shoppingCartActivities);
-
     // Start all workers created by this factory.
     factory.start();
     logger.info("Worker started for task queue: {} with WorkflowID : {}", TASK_QUEUE, WORKFLOW_ID);
@@ -90,13 +86,13 @@ public class BarrysPeanutsExecutor {
       logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
-      wf.resetShoppingCart(WORKFLOW_ID);
-      // TODO Create a compensation for Empty Cart
+      wf. completeShoppingCart(WORKFLOW_ID);
+      // TODO Create a compensation for exiting the Shopping Cart
 
       purchaseItems = wf.queryPurchaseItems(WORKFLOW_ID);
 
       logger.info(
-          "The count of purchase items after the cart is emptied is {}",
+          "The count of purchase items after the shopping cart is completed is {}",
           purchaseItems.toArray().length);
 
     } catch (WorkflowException e) {

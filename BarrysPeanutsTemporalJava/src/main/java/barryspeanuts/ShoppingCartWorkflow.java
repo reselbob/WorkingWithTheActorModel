@@ -31,5 +31,5 @@ public interface ShoppingCartWorkflow {
   void ship(String workflowId);
 
   @SignalMethod
-  void resetShoppingCart(String workflowId);
+  void  completeShoppingCart(String workflowId);
 }

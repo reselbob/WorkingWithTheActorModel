@@ -14,9 +14,7 @@ import org.slf4j.Logger;
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   private static final Logger logger = Workflow.getLogger(ShoppingCartWorkflowImpl.class);
 
-  List<String> messageQueue = new ArrayList<>(20);
   boolean exit = false;
-  ShoppingCartActivities activities = new ShoppingCartActivitiesImpl();
   List<PurchaseItem> purchaseItems = new ArrayList<>();
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
@@ -24,18 +22,9 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   public List<String> startWorkflow() {
 
     logger.info("Starting Workflow for Barry's Peanuts");
-
-    List<String> receivedMessages = new ArrayList<>(20);
-
     while (true) {
-      Workflow.await(() -> !messageQueue.isEmpty() || exit);
-      //this.queue.poll(Duration.ofDays(30));
-      if (messageQueue.isEmpty() && exit) {
-        // no messages in queue and exit signal was sent, return the received messages
-        return receivedMessages;
-      }
-      String message = messageQueue.remove(0);
-      receivedMessages.add(message);
+      Workflow.await(() -> exit);
+      //Workflow.await(() -> !messageQueue.isEmpty() || exit);
     }
   }
 
@@ -77,9 +66,9 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   }
 
   @Override
-  public void resetShoppingCart(String workflowId) {
+  public void  completeShoppingCart(String workflowId) {
     if(workflowId == null) throw new NullPointerException();
-    logger.info("Resetting Shopping Cart according to WorkflowId: {}", workflowId);
+    logger.info("Shopping Cart process is completing according to WorkflowId: {}", workflowId);
     this.purchaseItems = new ArrayList<>();
   }
 
