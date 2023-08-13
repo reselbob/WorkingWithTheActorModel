@@ -2,10 +2,11 @@ package barryspeanuts.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Purchase {
 
-  String id;
+  UUID id;
   List<PurchaseItem> purchaseItems;
   Date purchaseDate;
 
@@ -15,9 +16,10 @@ public class Purchase {
   */
   public Purchase() {}
 
-  public Purchase(List<PurchaseItem> purchaseItems, Date purchaseDate) {
+  public Purchase(List<PurchaseItem> purchaseItems) {
+    this.id = UUID.randomUUID();
     this.purchaseItems = purchaseItems;
-    this.purchaseDate = purchaseDate;
+    this.purchaseDate = new Date();
   }
 
   public List<PurchaseItem> getPurchaseItems() {
@@ -27,4 +29,9 @@ public class Purchase {
   public Date getPurchaseDate() {
     return purchaseDate;
   }
+
+  public UUID getId() {
+    return id;
+  }
+
 }

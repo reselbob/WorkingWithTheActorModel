@@ -1,6 +1,8 @@
 package barryspeanuts;
 
 import barryspeanuts.mock.MockHelper;
+import barryspeanuts.model.CreditCard;
+import barryspeanuts.model.Purchase;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowException;
@@ -62,34 +64,43 @@ public class BarrysPeanutsExecutor {
       PurchaseItem purchaseItem = MockHelper.getPurchaseItem();
       WorkflowClient.start(wf::startWorkflow);
       // Add some purchase items to the workflow for processing
-      wf.addItem(WORKFLOW_ID, purchaseItem);
-      wf.addItem(WORKFLOW_ID, purchaseItem);
-      wf.addItem(WORKFLOW_ID, purchaseItem);
-      wf.addItem(WORKFLOW_ID, purchaseItem);
+      wf.addItem( purchaseItem);
+      wf.addItem(purchaseItem);
+      wf.addItem(purchaseItem);
+      wf.addItem(purchaseItem);
+
+      List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
+
+      Purchase purchase = new Purchase(purchaseItems);
+
 
       // Checkout
-      wf.checkOut(WORKFLOW_ID);
+      wf.checkOut(purchase);
       // TODO Use the Temporal Saga Library
       //
       // (https://www.javadoc.io/static/io.temporal/temporal-sdk/1.0.0/io/temporal/workflow/Saga.html)
       //  to create a compensation if something goes wrong with Checkout
 
+      String firstName = purchase.getPurchaseItems().get(0).getCustomer().getFirstName();
+      String lastName = purchase.getPurchaseItems().get(0).getCustomer().getLastName();
+      CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
+
       // Pay
-      wf.pay(WORKFLOW_ID);
+      wf.pay(purchase, creditCard);
       // TODO Create a compensation for Pay
 
       // Ship
-      wf.ship(WORKFLOW_ID);
+      wf.ship(purchase, "FEDEXW");
       // TODO Create a compensation for Ship
 
-      List<PurchaseItem> purchaseItems = wf.queryPurchaseItems(WORKFLOW_ID);
+      purchaseItems = wf.queryPurchaseItems();
       logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
-      wf. completeShoppingCart(WORKFLOW_ID);
-      // TODO Create a compensation for exiting the Shopping Cart
+      wf.completeShoppingCart();
+      // TODO Create a compensation for completing the Shopping Cart
 
-      purchaseItems = wf.queryPurchaseItems(WORKFLOW_ID);
+      purchaseItems = wf.queryPurchaseItems();
 
       logger.info(
           "The count of purchase items after the shopping cart is completed is {}",
@@ -99,7 +110,6 @@ public class BarrysPeanutsExecutor {
       // TODO Execute Saga.compensate() here
       throw e;
     }
-
-    System.exit(0);
+    logger.info("Nothing left to do, so the Executor will exit. That's all folks!");
   }
 }
