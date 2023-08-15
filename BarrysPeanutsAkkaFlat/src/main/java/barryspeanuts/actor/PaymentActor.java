@@ -9,8 +9,6 @@ import barryspeanuts.msg.CreditCard;
 import barryspeanuts.msg.Customer;
 import java.util.Date;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PaymentActor extends AbstractBehavior<Object> {
   private PaymentActor(ActorContext<Object> context) {
@@ -35,11 +33,13 @@ public class PaymentActor extends AbstractBehavior<Object> {
 
     double amount = msg.getPaymentAmount();
     // Now pay
-    getContext().getLog().info(
-        "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}\n",
-        creditCard.getNameOnCard(),
-        creditCard.getCreditCardNumber(),
-        amount);
+    getContext()
+        .getLog()
+        .info(
+            "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}\n",
+            creditCard.getNameOnCard(),
+            creditCard.getCreditCardNumber(),
+            amount);
     return this;
   }
 

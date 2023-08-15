@@ -8,8 +8,6 @@ import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.msg.Customer;
 import barryspeanuts.msg.PurchaseItem;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CheckOutActor extends AbstractBehavior<Object> {
   private CheckOutActor(ActorContext<Object> context) {
@@ -31,7 +29,10 @@ public class CheckOutActor extends AbstractBehavior<Object> {
 
   private Behavior<Object> handleStartCheckout(StartCheckout msg) {
     Customer customer = msg.getPurchaseItems().get(0).getCustomer();
-    getContext().getLog().info("{} {} has has started Checkout of {} items.\n",
+    getContext()
+        .getLog()
+        .info(
+            "{} {} has has started Checkout of {} items.\n",
             customer.getFirstName(),
             customer.getLastName(),
             msg.purchaseItems.toArray().length);

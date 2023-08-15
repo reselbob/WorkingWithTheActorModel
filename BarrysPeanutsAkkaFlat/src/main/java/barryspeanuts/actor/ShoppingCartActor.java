@@ -15,8 +15,6 @@ import barryspeanuts.msg.PurchaseItem;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
   private List<PurchaseItem> purchaseItems;
@@ -94,9 +92,13 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   private Behavior<Object> handleCheckoutCart(CheckoutCart msg) {
     String firstName = msg.getPurchaseItems().get(0).getCustomer().getFirstName();
     String lastName = msg.getPurchaseItems().get(0).getCustomer().getLastName();
-    getContext().getLog().info(
-        "{} {} is starting a checkout of {} items \n",
-        firstName, lastName, msg.getPurchaseItems().toArray().length);
+    getContext()
+        .getLog()
+        .info(
+            "{} {} is starting a checkout of {} items \n",
+            firstName,
+            lastName,
+            msg.getPurchaseItems().toArray().length);
 
     // Tell the CheckOut Actor to check out
     ActorRef<Object> checkoutActor = ActorSystem.create(CheckOutActor.create(), "checkoutActor");

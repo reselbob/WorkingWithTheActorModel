@@ -9,12 +9,10 @@ import barryspeanuts.msg.PurchaseItem;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShipperActor extends AbstractBehavior<Object> {
 
-  //private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  // private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private ShipperActor(ActorContext<Object> context) {
     super(context);
@@ -38,12 +36,14 @@ public class ShipperActor extends AbstractBehavior<Object> {
     String firstName = msg.getPurchaseItems().get(0).getCustomer().getFirstName();
     String lastName = msg.getPurchaseItems().get(0).getCustomer().getLastName();
     Date shipDate = new Date();
-    getContext().getLog().info(
-        "{} {} is Shipping the purchase using Shipper: {} on {}.\n",
-        firstName,
-        lastName,
-        msg.getShipper(),
-        shipDate);
+    getContext()
+        .getLog()
+        .info(
+            "{} {} is Shipping the purchase using Shipper: {} on {}.\n",
+            firstName,
+            lastName,
+            msg.getShipper(),
+            shipDate);
     return this;
   }
 

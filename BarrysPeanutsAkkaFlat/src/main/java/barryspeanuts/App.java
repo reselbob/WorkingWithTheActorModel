@@ -30,6 +30,7 @@ public class App {
 
     ActorSystem<Object> shoppingCartActor =
         ActorSystem.create(ShoppingCartActor.create(), "shoppingCartActor");
+
     purchaseItems.add(purchase);
     shoppingCartActor.tell(item);
 
