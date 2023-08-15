@@ -13,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PaymentActor extends AbstractBehavior<Object> {
-
-  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
-
   private PaymentActor(ActorContext<Object> context) {
     super(context);
   }
@@ -38,12 +35,10 @@ public class PaymentActor extends AbstractBehavior<Object> {
 
     double amount = msg.getPaymentAmount();
     // Now pay
-    logger.info(
-        "{} is Paying with Credit Card for {} with Credit Card Number {} on {} for the amount of {}\n",
-        PaymentActor.class,
+    getContext().getLog().info(
+        "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}\n",
         creditCard.getNameOnCard(),
         creditCard.getCreditCardNumber(),
-        new Date(),
         amount);
     return this;
   }

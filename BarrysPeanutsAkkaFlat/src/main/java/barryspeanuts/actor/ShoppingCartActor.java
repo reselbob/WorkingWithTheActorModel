@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
-
-  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
   private List<PurchaseItem> purchaseItems;
 
   private ShoppingCartActor(ActorContext<Object> context) {
@@ -41,7 +39,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     return newReceiveBuilder()
         .onMessage(AddItem.class, this::handleAddItem)
         .onMessage(RemoveItem.class, this::handleRemoveItem)
-        .onMessage(EmptyCart.class, this::handleEmptyCart)
+        .onMessage(ResetCart.class, this::handleResetCart)
         .onMessage(CheckoutCart.class, this::handleCheckoutCart)
         .onMessage(PaymentActor.PaymentInfo.class, this::handlePayment)
         .onMessage(ShipperActor.ShipmentInfo.class, this::handleShipping)
@@ -49,12 +47,12 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   private Behavior<Object> handleConfirmationMessage(ConfirmationMessage msg) {
-    logger.info(msg.getContent());
+    getContext().getLog().info(msg.getContent());
     return this;
   }
 
   private Behavior<Object> handleAddItem(AddItem msg) {
-    logger.info("Adding an Item");
+    getContext().getLog().info("Adding an Item");
     this.purchaseItems.add(msg.purchaseItem);
     return this;
   }
@@ -64,12 +62,9 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     return this;
   }
 
-  private Behavior<Object> handleEmptyCart(EmptyCart msg) throws InterruptedException {
-    logger.info(
-        "ShoppingCart is emptying the cart of {} items a checkout at {}. \n ",
-        this.purchaseItems.toArray().length,
-        new Date());
-    this.purchaseItems = new ArrayList<PurchaseItem>();
+  private Behavior<Object> handleResetCart(ResetCart msg) {
+    getContext().getLog().info("ShoppingCart is resetting the cart \n ");
+    this.purchaseItems = new ArrayList<>();
     return this;
   }
 
@@ -97,12 +92,11 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   private Behavior<Object> handleCheckoutCart(CheckoutCart msg) {
-
-    logger.info(
-        "{} is starting a checkout of {} items a checkout at {}. \n",
-        ShoppingCartActor.class,
-        this.purchaseItems.toArray().length,
-        new Date());
+    String firstName = msg.getPurchaseItems().get(0).getCustomer().getFirstName();
+    String lastName = msg.getPurchaseItems().get(0).getCustomer().getLastName();
+    getContext().getLog().info(
+        "{} {} is starting a checkout of {} items \n",
+        firstName, lastName, msg.getPurchaseItems().toArray().length);
 
     // Tell the CheckOut Actor to check out
     ActorRef<Object> checkoutActor = ActorSystem.create(CheckOutActor.create(), "checkoutActor");
@@ -135,23 +129,29 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     }
   }
 
-  public static class EmptyCart {
-    Date emptyCartDate;
+  public static class ResetCart {
+    Date resetCartDate;
 
-    public EmptyCart() {
-      this.emptyCartDate = new Date();
+    public ResetCart() {
+      this.resetCartDate = new Date();
     }
 
-    public Date getEmptyCartDate() {
-      return emptyCartDate;
+    public Date getResetCartDate() {
+      return resetCartDate;
     }
   }
 
   public static class CheckoutCart {
     Date checkoutCartDate;
+    List<PurchaseItem> purchaseItems;
 
-    public CheckoutCart() {
+    public CheckoutCart(List<PurchaseItem> purchaseItems) {
+      this.purchaseItems = purchaseItems;
       this.checkoutCartDate = new Date();
+    }
+
+    public List<PurchaseItem> getPurchaseItems() {
+      return purchaseItems;
     }
 
     public Date getEmptyCartDate() {

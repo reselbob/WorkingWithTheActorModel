@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class ShipperActor extends AbstractBehavior<Object> {
 
-  private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+  //private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
 
   private ShipperActor(ActorContext<Object> context) {
     super(context);
@@ -35,10 +35,13 @@ public class ShipperActor extends AbstractBehavior<Object> {
 
   private Behavior<Object> handleShipment(ShipmentInfo msg) {
     // Now ship
+    String firstName = msg.getPurchaseItems().get(0).getCustomer().getFirstName();
+    String lastName = msg.getPurchaseItems().get(0).getCustomer().getLastName();
     Date shipDate = new Date();
-    logger.info(
-        "{} is Shipping the purchase using Shipper: {} on {}.\n",
-        ShipperActor.class,
+    getContext().getLog().info(
+        "{} {} is Shipping the purchase using Shipper: {} on {}.\n",
+        firstName,
+        lastName,
         msg.getShipper(),
         shipDate);
     return this;

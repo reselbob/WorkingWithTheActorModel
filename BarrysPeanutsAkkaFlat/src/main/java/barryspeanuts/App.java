@@ -40,7 +40,7 @@ public class App {
     shoppingCartActor.tell(item);
 
     // Checkout
-    ShoppingCartActor.CheckoutCart checkout = new ShoppingCartActor.CheckoutCart();
+    ShoppingCartActor.CheckoutCart checkout = new ShoppingCartActor.CheckoutCart(purchaseItems);
     shoppingCartActor.tell(checkout);
 
     // Pay
@@ -58,7 +58,7 @@ public class App {
     shoppingCartActor.tell(shipmentInfo);
 
     // Empty Cart
-    ShoppingCartActor.EmptyCart emptyCart = new ShoppingCartActor.EmptyCart();
-    shoppingCartActor.tell(emptyCart);
+    ShoppingCartActor.ResetCart resetCart = new ShoppingCartActor.ResetCart();
+    shoppingCartActor.tell(resetCart);
   }
 }
