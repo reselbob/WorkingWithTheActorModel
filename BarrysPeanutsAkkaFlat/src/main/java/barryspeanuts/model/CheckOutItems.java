@@ -1,5 +1,7 @@
 package barryspeanuts.msg;
 
+import barryspeanuts.model.PurchaseItem;
+
 import java.util.List;
 
 public class CheckOutItems {
