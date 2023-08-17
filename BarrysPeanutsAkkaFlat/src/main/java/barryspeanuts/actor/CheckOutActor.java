@@ -5,9 +5,7 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import barryspeanuts.msg.Customer;
-import barryspeanuts.msg.PurchaseItem;
-import java.util.List;
+import java.util.UUID;
 
 public class CheckOutActor extends AbstractBehavior<Object> {
   private CheckOutActor(ActorContext<Object> context) {
@@ -18,36 +16,33 @@ public class CheckOutActor extends AbstractBehavior<Object> {
     return Behaviors.setup(CheckOutActor::new);
   }
 
-  public static Behavior<Object> behavior() {
-    return Behaviors.setup(CheckOutActor::new);
-  }
-
   @Override
   public Receive<Object> createReceive() {
     return newReceiveBuilder().onMessage(StartCheckout.class, this::handleStartCheckout).build();
   }
 
   private Behavior<Object> handleStartCheckout(StartCheckout msg) {
-    Customer customer = msg.getPurchaseItems().get(0).getCustomer();
     getContext()
         .getLog()
         .info(
-            "{} {} has has started Checkout of {} items.\n",
-            customer.getFirstName(),
-            customer.getLastName(),
-            msg.purchaseItems.toArray().length);
+            "TODO: Getting purchase state for PurchaseId {} from data store and denote that checkout has started.\n",
+            msg.purchaseId);
+
+    getContext().getLog().info("Starting checkout for PurchaseId {}.\n", msg.purchaseId);
+
+    getContext()
+        .getLog()
+        .info(
+            "TODO: Saving purchase state for PurchaseId {} from data store and denote that checkout has started.\n",
+            msg.purchaseId);
     return this;
   }
 
   public static class StartCheckout {
-    private final List<PurchaseItem> purchaseItems;
+    private final UUID purchaseId;
 
-    public StartCheckout(List<PurchaseItem> purchaseItems) {
-      this.purchaseItems = purchaseItems;
-    }
-
-    public List<PurchaseItem> getPurchaseItems() {
-      return purchaseItems;
+    public StartCheckout(UUID purchaseId) {
+      this.purchaseId = purchaseId;
     }
   }
 }

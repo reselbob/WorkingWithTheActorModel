@@ -1,4 +1,4 @@
-package barryspeanuts.msg;
+package barryspeanuts.model;
 
 import java.util.UUID;
 

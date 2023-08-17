@@ -1,6 +1,4 @@
-package barryspeanuts.msg;
-
-import barryspeanuts.model.PurchaseItem;
+package barryspeanuts.model;
 
 import java.util.List;
 

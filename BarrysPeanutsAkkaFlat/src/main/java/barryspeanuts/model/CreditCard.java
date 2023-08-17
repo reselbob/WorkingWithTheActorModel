@@ -1,4 +1,4 @@
-package barryspeanuts.msg;
+package barryspeanuts.model;
 
 public class CreditCard {
   private final String nameOnCard;

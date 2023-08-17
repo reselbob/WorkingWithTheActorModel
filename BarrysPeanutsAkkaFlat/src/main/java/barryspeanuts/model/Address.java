@@ -1,4 +1,4 @@
-package barryspeanuts.msg;
+package barryspeanuts.model;
 
 public class Address {
   private final String address1;

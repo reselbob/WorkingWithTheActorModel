@@ -1,8 +1,8 @@
 package barryspeanuts.helper;
 
-import barryspeanuts.msg.Address;
-import barryspeanuts.msg.CreditCard;
-import barryspeanuts.msg.Customer;
+import barryspeanuts.model.Address;
+import barryspeanuts.model.CreditCard;
+import barryspeanuts.model.Customer;
 
 public class MockHelper {
 
