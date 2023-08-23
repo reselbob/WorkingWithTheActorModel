@@ -25,15 +25,15 @@ public class CheckOutActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Getting purchase state for PurchaseId {} from data store and denote that checkout has started.\n",
+            "TODO: Getting purchase state for PurchaseId {} from data store and denote that checkout has started.",
             msg.purchaseId);
 
-    getContext().getLog().info("Starting checkout for PurchaseId {}.\n", msg.purchaseId);
+    getContext().getLog().info("Starting checkout for PurchaseId {}.", msg.purchaseId);
 
     getContext()
         .getLog()
         .info(
-            "TODO: Saving purchase state for PurchaseId {} from data store and denote that checkout has started.\n",
+            "TODO: Saving purchase state for PurchaseId {} from data store and denote that checkout has started.",
             msg.purchaseId);
     return this;
   }

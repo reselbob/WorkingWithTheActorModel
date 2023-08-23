@@ -29,7 +29,7 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received shipping confirmation by id {} for purchaseId {}.\n",
+            "Received shipping confirmation by id {} for purchaseId {}.",
             msg.getId(),
             msg.getPurchaseId());
     return this;
@@ -39,7 +39,7 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received payment confirmation by id {} for purchaseId {}.\n",
+            "Received payment confirmation by id {} for purchaseId {}.",
             msg.getId(),
             msg.getPurchaseId());
     return this;
@@ -49,8 +49,8 @@ public class CustomerActor extends AbstractBehavior<Object> {
     private final UUID id;
     private final UUID purchaseId;
 
-    public ShippingReceipt(UUID purchaseId) {
-      this.id = UUID.randomUUID();
+    public ShippingReceipt(UUID id, UUID purchaseId) {
+      this.id = id;
       this.purchaseId = purchaseId;
     }
 
@@ -67,8 +67,8 @@ public class CustomerActor extends AbstractBehavior<Object> {
     private final UUID id;
     private final UUID purchaseId;
 
-    public PaymentReceipt(UUID purchaseId) {
-      this.id = UUID.randomUUID();
+    public PaymentReceipt(UUID id, UUID purchaseId) {
+      this.id = id;
       this.purchaseId = purchaseId;
     }
 

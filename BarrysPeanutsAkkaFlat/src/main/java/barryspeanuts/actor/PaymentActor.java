@@ -8,6 +8,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -35,14 +36,13 @@ public class PaymentActor extends AbstractBehavior<Object> {
     // Get purchase state
     getContext()
         .getLog()
-        .info(
-            "TODO: Getting purchase state for payment according to PaymentId {}\n", msg.purchaseId);
-    double amount = msg.getPaymentAmount();
+        .info("TODO: Getting purchase state for payment according to PaymentId {}", msg.purchaseId);
+    BigDecimal amount = msg.getPaymentAmount();
     // Now pay
     getContext()
         .getLog()
         .info(
-            "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}\n",
+            "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}",
             creditCard.getNameOnCard(),
             creditCard.getCreditCardNumber(),
             amount);
@@ -50,11 +50,10 @@ public class PaymentActor extends AbstractBehavior<Object> {
     // Save purchase state
     getContext()
         .getLog()
-        .info(
-            "TODO: Saving purchase state for payment according to PaymentId {}\n", msg.purchaseId);
+        .info("TODO: Saving purchase state for payment according to PaymentId {}", msg.purchaseId);
 
     // Send a payment receipt
-    CustomerActor.PaymentReceipt paymentReceipt = new CustomerActor.PaymentReceipt(msg.purchaseId);
+    CustomerActor.PaymentReceipt paymentReceipt = new CustomerActor.PaymentReceipt(UUID.randomUUID(),msg.purchaseId);
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
     customerActor.tell(paymentReceipt);
     return this;
@@ -65,18 +64,18 @@ public class PaymentActor extends AbstractBehavior<Object> {
     private final UUID id;
     private final Customer customer;
     private final CreditCard creditCard;
-    private double paymentAmount;
+    private BigDecimal paymentAmount;
     private UUID purchaseId;
 
-    public PaymentInfo(Customer customer, CreditCard creditCard) {
-      this.id = UUID.randomUUID();
+    public PaymentInfo(UUID id, Customer customer, CreditCard creditCard) {
+      this.id = id;
       this.customer = customer;
       this.creditCard = creditCard;
     }
 
-    public PaymentInfo(
-        Customer customer, CreditCard creditCard, double paymentAmount, UUID purchaseId) {
-      this.id = UUID.randomUUID();
+    public PaymentInfo(UUID id,
+        Customer customer, CreditCard creditCard, BigDecimal paymentAmount, UUID purchaseId) {
+      this.id = id;
       this.customer = customer;
       this.creditCard = creditCard;
       this.paymentAmount = paymentAmount;
@@ -95,11 +94,11 @@ public class PaymentActor extends AbstractBehavior<Object> {
       return creditCard;
     }
 
-    public double getPaymentAmount() {
+    public BigDecimal getPaymentAmount() {
       return paymentAmount;
     }
 
-    public void setPaymentAmount(double paymentAmount) {
+    public void setPaymentAmount(BigDecimal paymentAmount) {
       this.paymentAmount = paymentAmount;
     }
   }
@@ -109,10 +108,11 @@ public class PaymentActor extends AbstractBehavior<Object> {
     private final Customer customer;
     private final Date paymentDate;
     private final String creditCardNumber;
-    private final double amount;
+    private final BigDecimal amount;
 
-    PaymentReceipt(Customer customer, Date paymentDate, String creditCardNumber, double amount) {
-      this.id = UUID.randomUUID();
+    PaymentReceipt(UUID id,
+        Customer customer, Date paymentDate, String creditCardNumber, BigDecimal amount) {
+      this.id = id;
       this.customer = customer;
       this.paymentDate = paymentDate;
       this.creditCardNumber = creditCardNumber;
@@ -135,7 +135,7 @@ public class PaymentActor extends AbstractBehavior<Object> {
       return creditCardNumber;
     }
 
-    public double getPaymentAmount() {
+    public BigDecimal getPaymentAmount() {
       return amount;
     }
   }

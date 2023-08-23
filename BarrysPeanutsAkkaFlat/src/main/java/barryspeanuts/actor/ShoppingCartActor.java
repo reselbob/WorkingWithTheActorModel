@@ -9,14 +9,17 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.helper.MockHelper;
 import barryspeanuts.model.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
   private Purchase purchase;
 
   private ShoppingCartActor(ActorContext<Object> context) {
     super(context);
-    this.purchase = new Purchase();
+    this.purchase = new Purchase(UUID.randomUUID());
   }
 
   public static Behavior<Object> create() {
@@ -47,7 +50,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
 
   private Behavior<Object> handleResetCart(ResetCart msg) {
     getContext().getLog().info("ShoppingCart is resetting the cart \n ");
-    this.purchase = new Purchase();
+    this.purchase = new Purchase(UUID.randomUUID());
     return this;
   }
 
@@ -58,10 +61,10 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     String firstName = customer.getFirstName();
     String lastName = customer.getLastName();
     CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
-    double totalAmount =
-        this.purchase.getPurchaseItems().stream().mapToDouble(PurchaseItem::getTotal).sum();
+    BigDecimal totalAmount =
+        this.purchase.getPurchaseItems().stream().map(PurchaseItem::getTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
     PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(customer, creditCard, totalAmount, this.purchase.getId());
+        new PaymentActor.PaymentInfo(UUID.randomUUID(),customer, creditCard, totalAmount, this.purchase.getId());
     paymentActor.tell(paymentInfo);
     return this;
   }
@@ -70,7 +73,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     // Tell the Shipper to ship
     ActorRef<Object> shipperActor = ActorSystem.create(ShipperActor.create(), "shipperActor");
     String shipper = MockHelper.getShipper();
-    ShipperActor.ShipmentInfo shippingInfo = new ShipperActor.ShipmentInfo(shipper);
+    ShipperActor.ShipmentInfo shippingInfo = new ShipperActor.ShipmentInfo(UUID.randomUUID(),shipper);
     shippingInfo.setPurchase(this.purchase);
     shipperActor.tell(shippingInfo);
     return this;
@@ -82,7 +85,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "{} {} is starting a checkout of {} items \n",
+            "{} {} is starting a checkout of {} items ",
             firstName,
             lastName,
             this.purchase.getPurchaseItems().toArray().length);

@@ -1,5 +1,6 @@
 package barryspeanuts.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,7 +10,7 @@ public class PurchaseItem {
   Customer customer;
   String description;
   int packageSize;
-  double price;
+  BigDecimal price;
   int quantity;
   double total;
   Optional<Address> billingAddress;
@@ -23,7 +24,7 @@ public class PurchaseItem {
   public PurchaseItem() {}
 
   public PurchaseItem(
-      Customer customer, String description, int packageSize, double price, int quantity) {
+      Customer customer, String description, int packageSize, BigDecimal price, int quantity) {
     this.id = UUID.randomUUID();
     this.description = description;
     this.customer = customer;
@@ -48,7 +49,7 @@ public class PurchaseItem {
     return packageSize;
   }
 
-  public double getPrice() {
+  public BigDecimal getPrice() {
     return price;
   }
 

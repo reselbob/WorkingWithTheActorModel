@@ -6,8 +6,8 @@ import java.util.UUID;
 
 public class Purchase {
 
-  public Purchase() {
-    this.id = UUID.randomUUID();
+  public Purchase(UUID id) {
+    this.id = id;
     this.purchaseItems = new ArrayList<>();
   }
 

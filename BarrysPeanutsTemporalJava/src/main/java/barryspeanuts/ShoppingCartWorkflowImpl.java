@@ -18,11 +18,8 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void startWorkflow() {
-
     logger.info("Starting Workflow for Barry's Peanuts");
-    while (true) {
-      Workflow.await(() -> exit);
-    }
+    Workflow.await(() -> exit);
   }
 
   @Override
@@ -36,13 +33,17 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   }
 
   @Override
+  public void addItems(List<PurchaseItem> purchaseItems) {
+    this.purchaseItems.addAll(purchaseItems);
+  }
+
+  @Override
   public void removeItem(PurchaseItem purchaseItem) {
     this.purchaseItems.remove(purchaseItem);
   }
 
   @Override
   public void checkOut(Purchase purchase) {
-
     logger.info("Checking out purchase id {}", purchase.getId());
   }
 
@@ -59,18 +60,16 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
     logger.info("Shipping purchase id {} using {} ", purchase.getId(), shipper);
   }
 
-  /**
-   * @param purchaseItems, an empty List<PurchaseItem>
-   */
   @Override
-  public void resetShoppingCart(List<PurchaseItem> purchaseItems) {
-    logger.info("Clearing the purchase items and completing the shopping cart process");
-    this.purchaseItems = purchaseItems;
+  public void removeAllItems() {
+    logger.info("Removing the purchase items.");
+    this.purchaseItems.clear();
   }
 
   /** This is convenience signal to shut down the workflow */
   @Override
   public void exit() {
+    logger.info("Exiting the shopping cart");
     exit = true;
   }
 }

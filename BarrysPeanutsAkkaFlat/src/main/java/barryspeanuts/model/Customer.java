@@ -10,8 +10,8 @@ public class Customer {
   private final String phone;
   private final Address address;
 
-  public Customer(String firstName, String lastName, String email, String phone, Address address) {
-    this.id = UUID.randomUUID();
+  public Customer(UUID id, String firstName, String lastName, String email, String phone, Address address) {
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;

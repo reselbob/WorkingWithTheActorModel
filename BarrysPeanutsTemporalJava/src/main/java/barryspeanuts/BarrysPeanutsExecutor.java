@@ -11,6 +11,7 @@ import io.temporal.common.RetryOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +67,19 @@ public class BarrysPeanutsExecutor {
       WorkflowClient.start(wf::startWorkflow);
       // Add some purchase items to the workflow for processing
       wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
-      wf.addItem(purchaseItem);
+
+      List<PurchaseItem> otherPurchaseItems = new ArrayList<>();
+
+      otherPurchaseItems.add(
+          MockHelper.getPurchaseItem("Barry's Smoked Peanuts", 3, new BigDecimal("17.99"), 3));
+
+      otherPurchaseItems.add(
+          MockHelper.getPurchaseItem("Barry's Smoked Peanuts", 5, new BigDecimal("25.99"), 2));
+
+      otherPurchaseItems.add(
+          MockHelper.getPurchaseItem("Barry's Soft Shell Peanuts", 1, new BigDecimal("9.99"), 1));
+
+      wf.addItems(otherPurchaseItems);
 
       List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
 
@@ -97,19 +108,22 @@ public class BarrysPeanutsExecutor {
       logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
-      wf.resetShoppingCart(new ArrayList<>());
+      wf.removeAllItems();
       // TODO Create a compensation for completing the Shopping Cart
 
-      purchaseItems = wf.queryPurchaseItems();
+      //purchaseItems = wf.queryPurchaseItems();
 
       logger.info(
           "The count of purchase items after the shopping cart is completed is {}",
           purchaseItems.toArray().length);
 
+      // Exit the workflow
+      wf.exit();
+
     } catch (WorkflowException e) {
       // TODO Execute Saga.compensate() here
       throw e;
     }
-    logger.info("Nothing left to do, so the Executor will exit but the workflow is still running. That's all folks!");
+    logger.info("Nothing left to do, so the Executor will exit. That's all folks!");
   }
 }

@@ -21,6 +21,9 @@ public interface ShoppingCartWorkflow {
   void addItem(PurchaseItem purchaseItem);
 
   @SignalMethod
+  void addItems(List<PurchaseItem> purchaseItems);
+
+  @SignalMethod
   void removeItem(PurchaseItem purchaseItem);
 
   @SignalMethod
@@ -33,7 +36,7 @@ public interface ShoppingCartWorkflow {
   void ship(Purchase purchase, String shipper);
 
   @SignalMethod
-  void resetShoppingCart(List<PurchaseItem> purchaseItems);
+  void removeAllItems();
 
   @SignalMethod
   void exit();

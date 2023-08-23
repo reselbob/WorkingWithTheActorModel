@@ -8,10 +8,6 @@ public class Address {
   private String zipRegionCode;
   private String country;
 
-  public void setAddress1(String address1) {
-    this.address1 = address1;
-  }
-
   /*
   Add a parameterless constructor and setters to avoid complaints
   by the serializer.

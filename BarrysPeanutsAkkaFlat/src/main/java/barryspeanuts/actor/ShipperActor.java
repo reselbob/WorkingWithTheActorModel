@@ -11,9 +11,6 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ShipperActor extends AbstractBehavior<Object> {
-
-  // private static final Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
-
   private ShipperActor(ActorContext<Object> context) {
     super(context);
   }
@@ -41,13 +38,13 @@ public class ShipperActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Getting purchase state before shipping for PurchaseId {}.\n",
+            "TODO: Getting purchase state before shipping for PurchaseId {}.",
             msg.getPurchase().getId());
     // Now ship
     getContext()
         .getLog()
         .info(
-            "{} {} is Shipping the purchase using Shipper: {} on {}.\n",
+            "{} {} is Shipping the purchase using Shipper: {} on {}.",
             firstName,
             lastName,
             msg.getShipper(),
@@ -56,12 +53,12 @@ public class ShipperActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Saving the purchase state after shipping for PurchaseId {}.\n",
+            "TODO: Saving the purchase state after shipping for PurchaseId {}.",
             msg.getPurchase().getId());
 
     // Send a receipt
     CustomerActor.ShippingReceipt shippingReceipt =
-        new CustomerActor.ShippingReceipt(msg.getPurchase().getId());
+        new CustomerActor.ShippingReceipt(UUID.randomUUID(), msg.getPurchase().getId());
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
     customerActor.tell(shippingReceipt);
     return this;
@@ -73,8 +70,8 @@ public class ShipperActor extends AbstractBehavior<Object> {
     private final String shipper;
     private Purchase purchase;
 
-    public ShipmentInfo(String shipper) {
-      this.id = UUID.randomUUID();
+    public ShipmentInfo(UUID id, String shipper) {
+      this.id = id;
       this.shipper = shipper;
     }
 
