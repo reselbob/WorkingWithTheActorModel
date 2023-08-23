@@ -53,7 +53,8 @@ public class PaymentActor extends AbstractBehavior<Object> {
         .info("TODO: Saving purchase state for payment according to PaymentId {}", msg.purchaseId);
 
     // Send a payment receipt
-    CustomerActor.PaymentReceipt paymentReceipt = new CustomerActor.PaymentReceipt(UUID.randomUUID(),msg.purchaseId);
+    CustomerActor.PaymentReceipt paymentReceipt =
+        new CustomerActor.PaymentReceipt(UUID.randomUUID(), msg.purchaseId);
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
     customerActor.tell(paymentReceipt);
     return this;
@@ -73,8 +74,12 @@ public class PaymentActor extends AbstractBehavior<Object> {
       this.creditCard = creditCard;
     }
 
-    public PaymentInfo(UUID id,
-        Customer customer, CreditCard creditCard, BigDecimal paymentAmount, UUID purchaseId) {
+    public PaymentInfo(
+        UUID id,
+        Customer customer,
+        CreditCard creditCard,
+        BigDecimal paymentAmount,
+        UUID purchaseId) {
       this.id = id;
       this.customer = customer;
       this.creditCard = creditCard;
@@ -110,8 +115,8 @@ public class PaymentActor extends AbstractBehavior<Object> {
     private final String creditCardNumber;
     private final BigDecimal amount;
 
-    PaymentReceipt(UUID id,
-        Customer customer, Date paymentDate, String creditCardNumber, BigDecimal amount) {
+    PaymentReceipt(
+        UUID id, Customer customer, Date paymentDate, String creditCardNumber, BigDecimal amount) {
       this.id = id;
       this.customer = customer;
       this.paymentDate = paymentDate;

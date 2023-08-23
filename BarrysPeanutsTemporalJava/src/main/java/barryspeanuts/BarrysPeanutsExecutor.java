@@ -2,7 +2,6 @@ package barryspeanuts;
 
 import barryspeanuts.mock.MockHelper;
 import barryspeanuts.model.CreditCard;
-import barryspeanuts.model.Purchase;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowException;
@@ -83,39 +82,29 @@ public class BarrysPeanutsExecutor {
 
       List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
 
-      Purchase purchase = new Purchase(purchaseItems);
-
       // Checkout
-      wf.checkOut(purchase);
+      wf.checkOut();
       // TODO Use the Temporal Saga Library
       //
       // (https://www.javadoc.io/static/io.temporal/temporal-sdk/1.0.0/io/temporal/workflow/Saga.html)
       //  to create a compensation if something goes wrong with Checkout
 
-      String firstName = purchase.getPurchaseItems().get(0).getCustomer().getFirstName();
-      String lastName = purchase.getPurchaseItems().get(0).getCustomer().getLastName();
+      // for now, let just get the Customer from the first PurchaseItem
+      String firstName = purchaseItem.getCustomer().getFirstName();
+      String lastName = purchaseItem.getCustomer().getLastName();
       CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
 
       // Pay
-      wf.pay(purchase, creditCard);
+      wf.pay(creditCard);
       // TODO Create a compensation for Pay
 
       // Ship
-      wf.ship(purchase, "FEDEX");
+      wf.ship("FEDEX");
       // TODO Create a compensation for Ship
-
-      purchaseItems = wf.queryPurchaseItems();
-      logger.info("The count of purchase items is {}", purchaseItems.toArray().length);
 
       // Empty out the cart
       wf.removeAllItems();
       // TODO Create a compensation for completing the Shopping Cart
-
-      //purchaseItems = wf.queryPurchaseItems();
-
-      logger.info(
-          "The count of purchase items after the shopping cart is completed is {}",
-          purchaseItems.toArray().length);
 
       // Exit the workflow
       wf.exit();
@@ -124,6 +113,5 @@ public class BarrysPeanutsExecutor {
       // TODO Execute Saga.compensate() here
       throw e;
     }
-    logger.info("Nothing left to do, so the Executor will exit. That's all folks!");
   }
 }

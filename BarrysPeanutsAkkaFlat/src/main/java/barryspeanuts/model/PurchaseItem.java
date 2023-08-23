@@ -17,14 +17,14 @@ public class PurchaseItem {
   private Date shipDate;
 
   public PurchaseItem(
-          UUID id,
-          Customer customer,
-          String description,
-          int packageSize,
-          BigDecimal quantity,
-          BigDecimal price,
-          Address billingAddress,
-          Address shippingAddress) {
+      UUID id,
+      Customer customer,
+      String description,
+      int packageSize,
+      BigDecimal quantity,
+      BigDecimal price,
+      Address billingAddress,
+      Address shippingAddress) {
 
     this.id = id;
     this.description = description;

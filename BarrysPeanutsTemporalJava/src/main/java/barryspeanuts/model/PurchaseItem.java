@@ -23,8 +23,13 @@ public class PurchaseItem {
   */
   public PurchaseItem() {}
 
-  public PurchaseItem(UUID id,
-      Customer customer, String description, int packageSize, BigDecimal price, int quantity) {
+  public PurchaseItem(
+      UUID id,
+      Customer customer,
+      String description,
+      int packageSize,
+      BigDecimal price,
+      int quantity) {
     this.id = id;
     this.description = description;
     this.customer = customer;

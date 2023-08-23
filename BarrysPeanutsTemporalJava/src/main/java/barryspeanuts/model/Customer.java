@@ -16,7 +16,8 @@ public class Customer {
   */
   public Customer() {}
 
-  public Customer(UUID id, String firstName, String lastName, String email, String phone, Address address) {
+  public Customer(
+      UUID id, String firstName, String lastName, String email, String phone, Address address) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;

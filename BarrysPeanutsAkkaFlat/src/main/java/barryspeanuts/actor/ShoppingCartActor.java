@@ -9,7 +9,6 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.helper.MockHelper;
 import barryspeanuts.model.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -62,9 +61,12 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     String lastName = customer.getLastName();
     CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
     BigDecimal totalAmount =
-        this.purchase.getPurchaseItems().stream().map(PurchaseItem::getTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.purchase.getPurchaseItems().stream()
+            .map(PurchaseItem::getTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(UUID.randomUUID(),customer, creditCard, totalAmount, this.purchase.getId());
+        new PaymentActor.PaymentInfo(
+            UUID.randomUUID(), customer, creditCard, totalAmount, this.purchase.getId());
     paymentActor.tell(paymentInfo);
     return this;
   }
@@ -73,7 +75,8 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     // Tell the Shipper to ship
     ActorRef<Object> shipperActor = ActorSystem.create(ShipperActor.create(), "shipperActor");
     String shipper = MockHelper.getShipper();
-    ShipperActor.ShipmentInfo shippingInfo = new ShipperActor.ShipmentInfo(UUID.randomUUID(),shipper);
+    ShipperActor.ShipmentInfo shippingInfo =
+        new ShipperActor.ShipmentInfo(UUID.randomUUID(), shipper);
     shippingInfo.setPurchase(this.purchase);
     shipperActor.tell(shippingInfo);
     return this;

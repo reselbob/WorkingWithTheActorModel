@@ -3,7 +3,6 @@ package barryspeanuts.helper;
 import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
-
 import java.util.UUID;
 
 public class MockHelper {
@@ -14,7 +13,8 @@ public class MockHelper {
   ;
 
   public static Customer getCustomer() {
-    return new Customer(UUID.randomUUID(),"Barney", "Rubble", "barney@rubble.com", "310 878 9999", getAddress());
+    return new Customer(
+        UUID.randomUUID(), "Barney", "Rubble", "barney@rubble.com", "310 878 9999", getAddress());
   }
 
   public static Address getAddress() {

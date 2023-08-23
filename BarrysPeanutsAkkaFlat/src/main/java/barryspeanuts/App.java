@@ -9,11 +9,10 @@ import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
   public static void main(String[] args) {
@@ -24,10 +23,15 @@ public class App {
     Address address = MockHelper.getAddress();
 
     PurchaseItem purchaseItem1 =
-        new PurchaseItem(UUID.randomUUID(),customer, "Barry's Gourmet Peanuts Large",
-                5, new BigDecimal("1"), new BigDecimal("10.99"),
-                address,
-                address);
+        new PurchaseItem(
+            UUID.randomUUID(),
+            customer,
+            "Barry's Gourmet Peanuts Large",
+            5,
+            new BigDecimal("1"),
+            new BigDecimal("10.99"),
+            address,
+            address);
 
     ShoppingCartActor.AddItem item1 = new ShoppingCartActor.AddItem(purchaseItem1);
 
@@ -37,18 +41,29 @@ public class App {
     shoppingCartActor.tell(item1);
 
     PurchaseItem purchaseItem2 =
-        new PurchaseItem(UUID.randomUUID(),customer, "Barry's Gourmet Peanuts Medium",
-                3, new BigDecimal("2"),
-                new BigDecimal("7.99"),
-                address, address);
+        new PurchaseItem(
+            UUID.randomUUID(),
+            customer,
+            "Barry's Gourmet Peanuts Medium",
+            3,
+            new BigDecimal("2"),
+            new BigDecimal("7.99"),
+            address,
+            address);
     ShoppingCartActor.AddItem item2 = new ShoppingCartActor.AddItem(purchaseItem2);
 
     shoppingCartActor.tell(item2);
 
     PurchaseItem purchaseItem3 =
-        new PurchaseItem(UUID.randomUUID(), customer, "Barry's Gourmet Peanuts Small",
-                1, new BigDecimal("3"),
-                new BigDecimal("4.99"), address, address);
+        new PurchaseItem(
+            UUID.randomUUID(),
+            customer,
+            "Barry's Gourmet Peanuts Small",
+            1,
+            new BigDecimal("3"),
+            new BigDecimal("4.99"),
+            address,
+            address);
     ShoppingCartActor.AddItem item3 = new ShoppingCartActor.AddItem(purchaseItem3);
 
     // purchaseItems.add(purchaseItem3);
@@ -62,11 +77,13 @@ public class App {
     String firstName = customer.getFirstName();
     String lastName = customer.getLastName();
     CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
-    PaymentActor.PaymentInfo paymentInfo = new PaymentActor.PaymentInfo(UUID.randomUUID(),customer, creditCard);
+    PaymentActor.PaymentInfo paymentInfo =
+        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard);
     shoppingCartActor.tell(paymentInfo);
 
     // Ship
-    ShipperActor.ShipmentInfo shipmentInfo = new ShipperActor.ShipmentInfo(UUID.randomUUID(),MockHelper.getShipper());
+    ShipperActor.ShipmentInfo shipmentInfo =
+        new ShipperActor.ShipmentInfo(UUID.randomUUID(), MockHelper.getShipper());
     shoppingCartActor.tell(shipmentInfo);
 
     // Reset Cart

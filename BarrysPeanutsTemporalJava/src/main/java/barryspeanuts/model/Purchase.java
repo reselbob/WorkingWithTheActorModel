@@ -16,8 +16,8 @@ public class Purchase {
   */
   public Purchase() {}
 
-  public Purchase(List<PurchaseItem> purchaseItems) {
-    this.id = UUID.randomUUID();
+  public Purchase(UUID id, List<PurchaseItem> purchaseItems) {
+    this.id = id;
     this.purchaseItems = purchaseItems;
     this.purchaseDate = new Date();
   }
