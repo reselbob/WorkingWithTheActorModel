@@ -38,7 +38,8 @@ public class ShipperActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Getting purchase state before shipping for PurchaseId {}.",
+            "TODO: Getting purchase state before shipping for PurchaseId {}. " +
+                    "or rely upon Akka Event Sourcing",
             msg.getPurchase().getId());
     // Now ship
     getContext()
@@ -53,7 +54,8 @@ public class ShipperActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Saving the purchase state after shipping for PurchaseId {}.",
+            "TODO: Saving the purchase state after shipping for PurchaseId {} or " +
+                    "relying upon Akka Event Sourcing.",
             msg.getPurchase().getId());
 
     // Send a receipt

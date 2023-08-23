@@ -36,7 +36,8 @@ public class PaymentActor extends AbstractBehavior<Object> {
     // Get purchase state
     getContext()
         .getLog()
-        .info("TODO: Getting purchase state for payment according to PaymentId {}", msg.purchaseId);
+        .info("TODO: Getting purchase state for payment according to PaymentId {} or " +
+                "relying upon Akka Event Sourcing", msg.purchaseId);
     BigDecimal amount = msg.getPaymentAmount();
     // Now pay
     getContext()
@@ -50,7 +51,8 @@ public class PaymentActor extends AbstractBehavior<Object> {
     // Save purchase state
     getContext()
         .getLog()
-        .info("TODO: Saving purchase state for payment according to PaymentId {}", msg.purchaseId);
+        .info("TODO: Saving purchase state for payment according to PaymentId {} or " +
+                "relying upon Akka Event Sourcing.", msg.purchaseId);
 
     // Send a payment receipt
     CustomerActor.PaymentReceipt paymentReceipt =
