@@ -5,6 +5,7 @@ import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class MockHelper {
   public static Address getAddress() {
@@ -13,16 +14,16 @@ public class MockHelper {
   }
 
   public static Customer getCustomer() {
-    return new Customer("Josiah", "Bartlet", "prez@whitehouse.gove", "202 456 1414", getAddress());
+    return new Customer(UUID.randomUUID(),"Josiah", "Bartlet", "prez@whitehouse.gove", "202 456 1414", getAddress());
   }
 
   public static PurchaseItem getPurchaseItem() {
-    return new PurchaseItem(getCustomer(), "Deluxe Peanuts:", 3, new BigDecimal("12.99"), 5);
+    return new PurchaseItem(UUID.randomUUID(),getCustomer(), "Deluxe Peanuts:", 3, new BigDecimal("12.99"), 5);
   }
 
   public static PurchaseItem getPurchaseItem(
       String description, int packageSize, BigDecimal price, int quantity) {
-    return new PurchaseItem(getCustomer(), description, packageSize, price, quantity);
+    return new PurchaseItem(UUID.randomUUID(), getCustomer(), description, packageSize, price, quantity);
   }
 
   public static CreditCard getCreditCard(String firstName, String lastName) {

@@ -23,9 +23,9 @@ public class PurchaseItem {
   */
   public PurchaseItem() {}
 
-  public PurchaseItem(
+  public PurchaseItem(UUID id,
       Customer customer, String description, int packageSize, BigDecimal price, int quantity) {
-    this.id = UUID.randomUUID();
+    this.id = id;
     this.description = description;
     this.customer = customer;
     this.packageSize = packageSize;
