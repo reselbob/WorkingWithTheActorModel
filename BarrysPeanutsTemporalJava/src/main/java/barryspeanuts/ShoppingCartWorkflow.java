@@ -1,5 +1,6 @@
 package barryspeanuts;
 
+import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.workflow.QueryMethod;
@@ -29,10 +30,10 @@ public interface ShoppingCartWorkflow {
   void checkOut();
 
   @SignalMethod
-  void pay(CreditCard creditcard);
+  void pay(Address billingAddress, CreditCard creditcard);
 
   @SignalMethod
-  void ship(String shipper);
+  void ship(Address shippingAddress, String shipper);
 
   @SignalMethod
   void removeAllItems();

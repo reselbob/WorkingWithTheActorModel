@@ -25,8 +25,8 @@ public class CheckOutActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Getting purchase state for PurchaseId {} from data store and denote that checkout has " +
-                    "started or relying upon Akka event sourcing.",
+            "TODO: Getting purchase state for PurchaseId {} from data store and denote that checkout has "
+                + "started or relying upon the Akka Event Sourcing framework.",
             msg.purchaseId);
 
     getContext().getLog().info("Starting checkout for PurchaseId {}.", msg.purchaseId);
@@ -34,8 +34,8 @@ public class CheckOutActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Saving purchase state for PurchaseId {} from data store and denote that checkout has started." +
-                    " or rely upon Akka Event Sourcing",
+            "TODO: Saving purchase state for PurchaseId {} from data store and denote that checkout has started."
+                + " or rely upon the Akka Event Sourcing framework",
             msg.purchaseId);
     return this;
   }

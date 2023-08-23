@@ -1,14 +1,14 @@
 package barryspeanuts;
 
+import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
-import barryspeanuts.model.Purchase;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.workflow.Workflow;
 import io.temporal.workflow.WorkflowQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
@@ -16,8 +16,6 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   boolean exit = false;
   List<PurchaseItem> purchaseItems = new ArrayList<>();
-
-  //Purchase purchase = new Purchase(UUID.randomUUID(), purchaseItems);
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
   @Override
@@ -48,47 +46,47 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void checkOut() {
-    logger.info("Checking out {} purchase items.",
-            this.purchaseItems.toArray().length);
+    logger.info("Checking out {} purchase items.", this.purchaseItems.toArray().length);
   }
 
   @Override
-  public void pay(CreditCard creditCard) {
-    // Use the Customer's base address as the billing address
+  public void pay(Address billingAddress, CreditCard creditCard) {
     for (PurchaseItem purchaseItem : this.purchaseItems) {
-      purchaseItem.setBillingAddress(Optional.ofNullable(purchaseItem.getCustomer().getAddress()));
+      purchaseItem.setBillingAddress(Optional.ofNullable(billingAddress));
     }
 
+    JSONObject jsonObj = new JSONObject(billingAddress);
     logger.info(
-        "Paying for purchase using credit card number {} for {} purchase item.",
+        "Paying for purchase using credit card number {} for {} purchase item at billing address {}.",
         creditCard.getNumber(),
-        this.purchaseItems.toArray().length);
+        this.purchaseItems.toArray().length,
+        jsonObj);
   }
 
   @Override
-  public void ship(String shipper) {
-    // Use the Customer's base address as the Shipping address
+  public void ship(Address shippingAddress, String shipper) {
     for (PurchaseItem purchaseItem : this.purchaseItems) {
-      purchaseItem.setShippingAddress(Optional.ofNullable(purchaseItem.getCustomer().getAddress()));
+      purchaseItem.setShippingAddress(Optional.ofNullable(shippingAddress));
     }
+
+    JSONObject jsonObj = new JSONObject(shippingAddress);
     logger.info(
-        "Shipping {} purchase items using {}.",
+        "Shipping {} purchase items using {} to shipping address {}.",
         this.purchaseItems.toArray().length,
-        shipper);
+        shipper,
+        jsonObj);
   }
 
   @Override
   public void removeAllItems() {
 
-    logger.info("Removing {} purchase items.",
-            this.purchaseItems.toArray().length
-            );
+    logger.info("Removing {} purchase items.", this.purchaseItems.toArray().length);
 
     this.purchaseItems.clear();
 
-    logger.info("Removed purchase items. There are now {} purchase items in the shopping cart.",
-            this.purchaseItems.toArray().length
-            );
+    logger.info(
+        "Removed purchase items. There are now {} purchase items in the shopping cart.",
+        this.purchaseItems.toArray().length);
   }
 
   /** This is convenience signal to shut down the workflow */

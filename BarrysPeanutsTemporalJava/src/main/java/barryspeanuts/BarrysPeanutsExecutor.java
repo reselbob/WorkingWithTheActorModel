@@ -2,6 +2,7 @@ package barryspeanuts;
 
 import barryspeanuts.mock.MockHelper;
 import barryspeanuts.model.CreditCard;
+import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowException;
@@ -80,8 +81,6 @@ public class BarrysPeanutsExecutor {
 
       wf.addItems(otherPurchaseItems);
 
-      List<PurchaseItem> purchaseItems = wf.queryPurchaseItems();
-
       // Checkout
       wf.checkOut();
       // TODO Use the Temporal Saga Library
@@ -94,12 +93,15 @@ public class BarrysPeanutsExecutor {
       String lastName = purchaseItem.getCustomer().getLastName();
       CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
 
-      // Pay
-      wf.pay(creditCard);
+      // For purposes of demonstration, get the customer from the first purchase item
+      Customer customer = purchaseItem.getCustomer();
+
+      // Pay, using the Customer's base address
+      wf.pay(customer.getAddress(), creditCard);
       // TODO Create a compensation for Pay
 
-      // Ship
-      wf.ship("FEDEX");
+      // Ship, using the Customer's base address
+      wf.ship(customer.getAddress(), "FEDEX");
       // TODO Create a compensation for Ship
 
       // Empty out the cart
