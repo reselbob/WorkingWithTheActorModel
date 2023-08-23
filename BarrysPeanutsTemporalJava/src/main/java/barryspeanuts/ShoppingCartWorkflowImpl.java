@@ -17,7 +17,7 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   boolean exit = false;
   List<PurchaseItem> purchaseItems = new ArrayList<>();
 
-  Purchase purchase = new Purchase(UUID.randomUUID(), purchaseItems);
+  //Purchase purchase = new Purchase(UUID.randomUUID(), purchaseItems);
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
   @Override
@@ -48,9 +48,8 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void checkOut() {
-    logger.info("Checking out {} purchase items for purchase id {}.",
-            purchase.getPurchaseItems().toArray().length,
-            purchase.getId());
+    logger.info("Checking out {} purchase items.",
+            this.purchaseItems.toArray().length);
   }
 
   @Override
@@ -61,10 +60,9 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
     }
 
     logger.info(
-        "Paying for purchase id {} using credit card number {} for {} purchase item.",
-        purchase.getId(),
+        "Paying for purchase using credit card number {} for {} purchase item.",
         creditCard.getNumber(),
-        purchase.getPurchaseItems().toArray().length);
+        this.purchaseItems.toArray().length);
   }
 
   @Override
@@ -74,25 +72,22 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
       purchaseItem.setShippingAddress(Optional.ofNullable(purchaseItem.getCustomer().getAddress()));
     }
     logger.info(
-        "Shipping {} purchase items for purchase id {} using {}.",
-        purchase.getPurchaseItems().toArray().length,
-        purchase.getId(),
+        "Shipping {} purchase items using {}.",
+        this.purchaseItems.toArray().length,
         shipper);
   }
 
   @Override
   public void removeAllItems() {
 
-    logger.info("Removing {} purchase items for purchase id {}.",
-            purchase.getPurchaseItems().toArray().length,
-            purchase.getId()
+    logger.info("Removing {} purchase items.",
+            this.purchaseItems.toArray().length
             );
 
     this.purchaseItems.clear();
 
-    logger.info("Removed purchase items for purchase id {}. There are now {} purchase items in the shopping cart.",
-            purchase.getId(),
-            purchase.getPurchaseItems().toArray().length
+    logger.info("Removed purchase items. There are now {} purchase items in the shopping cart.",
+            this.purchaseItems.toArray().length
             );
   }
 

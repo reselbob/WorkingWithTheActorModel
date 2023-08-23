@@ -113,5 +113,6 @@ public class BarrysPeanutsExecutor {
       // TODO Execute Saga.compensate() here
       throw e;
     }
+    logger.info("Nothing left to do, so the Executor will exit. That's all folks!");
   }
 }
