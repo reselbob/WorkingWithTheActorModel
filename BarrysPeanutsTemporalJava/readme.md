@@ -64,16 +64,26 @@ If you do not have the Temporal server up and running already, run the following
 Here is the command for starting the Temporal Server on a local Ubuntu machine. Execute the command in a terminal
 window.
 
-`temporal server start-dev --ip 0.0.0.0`
-
+```bash
+temporal server start-dev --ip 0.0.0.0`
+```
 
 ---
 
-## (4) Start the application
+## (4) Optional, clean out the prior Maven packages
+
+If you are running this code after running the Barry's Peanuts Akka Flat demonstration project that part of this repository, clean out
+the packages by running the following commmand.
+
+```bash
+mvn clean package install
+```
+
+## (5) Start the application
 
 In yet another separate terminal window run:
 
-```
+```bash
 mvn exec:java -Dexec.mainClass="barryspeanuts.BarrysPeanutsExecutor"
 ```
 
