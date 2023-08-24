@@ -65,7 +65,7 @@ Here is the command for starting the Temporal Server on a local Ubuntu machine. 
 window.
 
 ```bash
-temporal server start-dev --ip 0.0.0.0`
+temporal server start-dev --ip 0.0.0.0
 ```
 
 ---
