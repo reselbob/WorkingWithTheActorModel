@@ -7,7 +7,9 @@ import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.model.Purchase;
+import barryspeanuts.model.PurchaseItem;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class ShipperActor extends AbstractBehavior<Object> {
@@ -30,17 +32,17 @@ public class ShipperActor extends AbstractBehavior<Object> {
 
   private Behavior<Object> handleShipment(ShipmentInfo msg) {
 
-    String firstName = msg.getPurchase().getPurchaseItems().get(0).getCustomer().getFirstName();
-    String lastName = msg.getPurchase().getPurchaseItems().get(0).getCustomer().getLastName();
+    String firstName = msg.getPurchaseItems().get(0).getCustomer().getFirstName();
+    String lastName = msg.getPurchaseItems().get(0).getCustomer().getLastName();
     Date shipDate = new Date();
 
     // Get Purchase state
     getContext()
         .getLog()
         .info(
-            "TODO: Getting purchase state before shipping for PurchaseId {}. "
-                + "or rely upon the Akka Event Sourcing framework",
-            msg.getPurchase().getId());
+            "TODO: Getting purchase items state before shipping for {} purchase items. "
+                + "or rely upon the Akka Event Sourcing framework.",
+            msg.getPurchaseItems().size());
     // Now ship
     getContext()
         .getLog()
@@ -54,13 +56,13 @@ public class ShipperActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "TODO: Saving the purchase state after shipping for PurchaseId {} or "
+            "TODO: Saving the purchase state after shipping for {} purchase items"
                 + "relying upon the Akka Event Sourcing framework.",
-            msg.getPurchase().getId());
+            msg.getPurchaseItems().size());
 
     // Send a receipt
     CustomerActor.ShippingReceipt shippingReceipt =
-        new CustomerActor.ShippingReceipt(UUID.randomUUID(), msg.getPurchase().getId());
+        new CustomerActor.ShippingReceipt(UUID.randomUUID(), msg.getPurchaseItems());
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
     customerActor.tell(shippingReceipt);
     return this;
@@ -69,11 +71,12 @@ public class ShipperActor extends AbstractBehavior<Object> {
   public static class ShipmentInfo {
     private final UUID id;
     private final String shipper;
-    private Purchase purchase;
+    private final List<PurchaseItem> purchaseItems;
 
-    public ShipmentInfo(UUID id, String shipper) {
+    public ShipmentInfo(UUID id, List<PurchaseItem> purchaseItems, String shipper) {
       this.id = id;
       this.shipper = shipper;
+      this.purchaseItems = purchaseItems;
     }
 
     public UUID getId() {
@@ -84,12 +87,8 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    public Purchase getPurchase() {
-      return this.purchase;
-    }
-
-    public void setPurchase(Purchase purchase) {
-      this.purchase = purchase;
+    public List<PurchaseItem> getPurchaseItems() {
+      return this.purchaseItems;
     }
   }
 

@@ -5,6 +5,10 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import barryspeanuts.model.Customer;
+import barryspeanuts.model.PurchaseItem;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public class CustomerActor extends AbstractBehavior<Object> {
@@ -29,9 +33,9 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received shipping confirmation by id {} for purchaseId {}.",
+            "Received shipping confirmation by id {} for {} purchase items.",
             msg.getId(),
-            msg.getPurchaseId());
+            msg.getPurchaseItems().size());
     return this;
   }
 
@@ -39,45 +43,52 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received payment confirmation by id {} for purchaseId {}.",
+            "Received payment confirmation by id {} for customer {} {}.",
             msg.getId(),
-            msg.getPurchaseId());
+            msg.getCustomer().getFirstName(),
+            msg.getCustomer().getLastName());
     return this;
   }
 
   public static class ShippingReceipt {
     private final UUID id;
-    private final UUID purchaseId;
+    private final List<PurchaseItem> purchaseItems;
 
-    public ShippingReceipt(UUID id, UUID purchaseId) {
+    public ShippingReceipt(UUID id, List<PurchaseItem> purchaseItems) {
       this.id = id;
-      this.purchaseId = purchaseId;
+      this.purchaseItems = purchaseItems;
     }
 
     public UUID getId() {
       return id;
     }
 
-    public UUID getPurchaseId() {
-      return purchaseId;
+    public List<PurchaseItem> getPurchaseItems() {
+      return purchaseItems;
     }
   }
 
   public static class PaymentReceipt {
     private final UUID id;
-    private final UUID purchaseId;
+    private final Customer customer;
+    private final BigDecimal purchaseTotal;
 
-    public PaymentReceipt(UUID id, UUID purchaseId) {
+    public PaymentReceipt(UUID id, Customer customer, BigDecimal purchaseTotal) {
       this.id = id;
-      this.purchaseId = purchaseId;
+      this.customer = customer;
+      this.purchaseTotal = purchaseTotal;
     }
 
     public UUID getId() {
       return id;
     }
 
-    public UUID getPurchaseId() {
-      return purchaseId;
+    public Customer getCustomer() {
+      return customer;
+    }
+
+    public BigDecimal getPurchaseTotal() {
+      return purchaseTotal;
     }
   }
 }

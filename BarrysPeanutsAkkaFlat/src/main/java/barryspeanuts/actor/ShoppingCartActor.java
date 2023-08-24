@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
-  private Purchase purchase;
+  private final Purchase purchase;
 
   private ShoppingCartActor(ActorContext<Object> context) {
     super(context);
@@ -29,7 +29,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     return newReceiveBuilder()
         .onMessage(AddItem.class, this::handleAddItem)
         .onMessage(RemoveItem.class, this::handleRemoveItem)
-        .onMessage(ResetCart.class, this::handleResetCart)
+        .onMessage(EmptyCart.class, this::handleEmptyCart)
         .onMessage(CheckoutCart.class, this::handleCheckoutCart)
         .onMessage(PaymentActor.PaymentInfo.class, this::handlePayment)
         .onMessage(ShipperActor.ShipmentInfo.class, this::handleShipping)
@@ -37,7 +37,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   private Behavior<Object> handleAddItem(AddItem msg) {
-    this.purchase.add(msg.purchaseItem);
+    this.purchase.getPurchaseItems().add(msg.getPurchaseItem());
     return this;
   }
 
@@ -46,9 +46,9 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     return this;
   }
 
-  private Behavior<Object> handleResetCart(ResetCart msg) {
-    getContext().getLog().info("ShoppingCart is resetting the cart \n ");
-    this.purchase = new Purchase(UUID.randomUUID());
+  private Behavior<Object> handleEmptyCart(EmptyCart msg) {
+    getContext().getLog().info("ShoppingCart is emptying the cart.");
+    this.purchase.getPurchaseItems().clear();
     return this;
   }
 
@@ -62,8 +62,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(
-            UUID.randomUUID(), customer, creditCard, totalAmount, this.purchase.getId());
+        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard, totalAmount);
     paymentActor.tell(paymentInfo);
     return this;
   }
@@ -73,8 +72,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     ActorRef<Object> shipperActor = ActorSystem.create(ShipperActor.create(), "shipperActor");
     String shipper = msg.getShipper();
     ShipperActor.ShipmentInfo shippingInfo =
-        new ShipperActor.ShipmentInfo(UUID.randomUUID(), shipper);
-    shippingInfo.setPurchase(this.purchase);
+        new ShipperActor.ShipmentInfo(UUID.randomUUID(), msg.getPurchaseItems(), "FEDEX");
     shipperActor.tell(shippingInfo);
     return this;
   }
@@ -85,7 +83,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "{} {} is starting a checkout of {} items ",
+            "{} {} is starting a checkout of {} items.",
             firstName,
             lastName,
             this.purchase.getPurchaseItems().toArray().length);
@@ -122,15 +120,15 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     }
   }
 
-  public static class ResetCart {
-    private final Date resetCartDate;
+  public static class EmptyCart {
+    private final Date emptyCartDate;
 
-    public ResetCart() {
-      this.resetCartDate = new Date();
+    public EmptyCart() {
+      this.emptyCartDate = new Date();
     }
 
-    public Date getResetCartDate() {
-      return resetCartDate;
+    public Date getEmptyCartDate() {
+      return emptyCartDate;
     }
   }
 

@@ -9,6 +9,8 @@ import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +18,16 @@ import org.slf4j.LoggerFactory;
 public class App {
   public static void main(String[] args) {
     Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
-    logger.info("{} is starting Barry's Gourmet Peanuts", App.class);
+    logger.info("{} is starting Barry's Gourmet Peanuts.", App.class);
 
     Address address = new Address("123 Main Street", "Apt 1", "Anytown", "CA", "99999-9999", "USA");
 
     Customer customer =
         new Customer(
             UUID.randomUUID(), "Barney", "Rubble", "barney@rubble.com", "310 878 9999", address);
+
+    List<PurchaseItem> purchaseItems = new ArrayList<>();
+
     PurchaseItem purchaseItem1 =
         new PurchaseItem(
             UUID.randomUUID(),
@@ -33,6 +38,8 @@ public class App {
             new BigDecimal("10.99"),
             address,
             address);
+
+    purchaseItems.add(purchaseItem1);
 
     ShoppingCartActor.AddItem item1 = new ShoppingCartActor.AddItem(purchaseItem1);
 
@@ -51,6 +58,9 @@ public class App {
             new BigDecimal("7.99"),
             address,
             address);
+
+    purchaseItems.add(purchaseItem2);
+
     ShoppingCartActor.AddItem item2 = new ShoppingCartActor.AddItem(purchaseItem2);
 
     shoppingCartActor.tell(item2);
@@ -66,6 +76,8 @@ public class App {
             address,
             address);
 
+    purchaseItems.add(purchaseItem3);
+
     ShoppingCartActor.AddItem item3 = new ShoppingCartActor.AddItem(purchaseItem3);
 
     shoppingCartActor.tell(item3);
@@ -74,23 +86,29 @@ public class App {
     ShoppingCartActor.CheckoutCart checkout = new ShoppingCartActor.CheckoutCart();
     shoppingCartActor.tell(checkout);
 
-    // Pay
+    // Get  the credit card
     String firstName = customer.getFirstName();
     String lastName = customer.getLastName();
     CreditCard creditCard =
         new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
+
+    BigDecimal purchaseTotal = new BigDecimal("0");
+    for (PurchaseItem purchaseItem : purchaseItems) {
+      purchaseTotal = purchaseTotal.add(purchaseItem.getTotal());
+    }
+
     PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard);
+        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard, purchaseTotal);
     shoppingCartActor.tell(paymentInfo);
 
     // Ship
 
     ShipperActor.ShipmentInfo shipmentInfo =
-        new ShipperActor.ShipmentInfo(UUID.randomUUID(), "FEDEX");
+        new ShipperActor.ShipmentInfo(UUID.randomUUID(), purchaseItems, "FEDEX");
     shoppingCartActor.tell(shipmentInfo);
 
     // Reset Cart
-    ShoppingCartActor.ResetCart resetCart = new ShoppingCartActor.ResetCart();
+    ShoppingCartActor.EmptyCart resetCart = new ShoppingCartActor.EmptyCart();
     shoppingCartActor.tell(resetCart);
   }
 }
