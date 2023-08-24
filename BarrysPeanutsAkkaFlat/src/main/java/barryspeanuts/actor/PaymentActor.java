@@ -39,13 +39,13 @@ public class PaymentActor extends AbstractBehavior<Object> {
         .info(
             "TODO: Getting purchase state for payment according to PaymentId {} or "
                 + "relying upon the Akka Event Sourcing framework",
-            msg.purchaseId);
+            msg.getPurchaseId());
     BigDecimal amount = msg.getPaymentAmount();
     // Now pay
     getContext()
         .getLog()
         .info(
-            "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}",
+            "Paying with Credit Card for {} with Credit Card Number {} for the amount of {}.",
             creditCard.getNameOnCard(),
             creditCard.getCreditCardNumber(),
             amount);
@@ -56,18 +56,17 @@ public class PaymentActor extends AbstractBehavior<Object> {
         .info(
             "TODO: Saving purchase state for payment according to PaymentId {} or "
                 + "relying upon the Akka Event Sourcing framework.",
-            msg.purchaseId);
+            msg.getPurchaseId());
 
     // Send a payment receipt
     CustomerActor.PaymentReceipt paymentReceipt =
-        new CustomerActor.PaymentReceipt(UUID.randomUUID(), msg.purchaseId);
+        new CustomerActor.PaymentReceipt(UUID.randomUUID(), msg.getPurchaseId());
     ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
     customerActor.tell(paymentReceipt);
     return this;
   }
 
   public static class PaymentInfo {
-
     private final UUID id;
     private final Customer customer;
     private final CreditCard creditCard;
@@ -107,6 +106,10 @@ public class PaymentActor extends AbstractBehavior<Object> {
 
     public BigDecimal getPaymentAmount() {
       return paymentAmount;
+    }
+
+    public UUID getPurchaseId() {
+      return purchaseId;
     }
 
     public void setPaymentAmount(BigDecimal paymentAmount) {

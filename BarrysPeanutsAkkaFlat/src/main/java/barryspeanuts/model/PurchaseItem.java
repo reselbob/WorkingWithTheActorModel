@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.UUID;
 
 public class PurchaseItem {
-
   private final UUID id;
   private final Customer customer;
   private final String description;
@@ -25,7 +24,6 @@ public class PurchaseItem {
       BigDecimal price,
       Address billingAddress,
       Address shippingAddress) {
-
     this.id = id;
     this.description = description;
     this.customer = customer;

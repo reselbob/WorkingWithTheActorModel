@@ -1,21 +1,17 @@
 package barryspeanuts.model;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 public class PurchaseItem {
-  UUID id;
-  Customer customer;
-  String description;
-  int packageSize;
-  BigDecimal price;
-  int quantity;
-  double total;
-  Optional<Address> billingAddress;
-  Optional<Address> shippingAddress;
-  Date purchaseDate;
+  private UUID id;
+  private Customer customer;
+  private String description;
+  private int packageSize;
+  private BigDecimal price;
+  private BigDecimal quantity;
+
+  private BigDecimal total;
 
   /*
   Add a parameterless constructor and setters to make this serializable
@@ -29,13 +25,14 @@ public class PurchaseItem {
       String description,
       int packageSize,
       BigDecimal price,
-      int quantity) {
+      BigDecimal quantity) {
     this.id = id;
     this.description = description;
     this.customer = customer;
     this.packageSize = packageSize;
     this.price = price;
     this.quantity = quantity;
+    this.total = quantity.multiply(price);
   }
 
   public UUID getId() {
@@ -58,35 +55,11 @@ public class PurchaseItem {
     return price;
   }
 
-  public int getQuantity() {
+  public BigDecimal getQuantity() {
     return quantity;
   }
 
-  public double getTotal() {
-    return total;
-  }
-
-  public Optional<Address> getBillingAddress() {
-    return billingAddress;
-  }
-
-  public void setBillingAddress(Optional<Address> billingAddress) {
-    this.billingAddress = billingAddress;
-  }
-
-  public Optional<Address> getShippingAddress() {
-    return shippingAddress;
-  }
-
-  public void setShippingAddress(Optional<Address> shippingAddress) {
-    this.shippingAddress = shippingAddress;
-  }
-
-  public Date getPurchaseDate() {
-    return purchaseDate;
-  }
-
-  public void setPurchaseDate(Date purchaseDate) {
-    this.purchaseDate = purchaseDate;
+  public BigDecimal getTotal() {
+    return this.total;
   }
 }

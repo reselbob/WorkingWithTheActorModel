@@ -4,7 +4,6 @@ import akka.actor.typed.ActorSystem;
 import barryspeanuts.actor.PaymentActor;
 import barryspeanuts.actor.ShipperActor;
 import barryspeanuts.actor.ShoppingCartActor;
-import barryspeanuts.helper.MockHelper;
 import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
@@ -19,9 +18,11 @@ public class App {
     Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
     logger.info("{} is starting Barry's Gourmet Peanuts", App.class);
 
-    Customer customer = MockHelper.getCustomer();
-    Address address = MockHelper.getAddress();
+    Address address = new Address("123 Main Street", "Apt 1", "Anytown", "CA", "99999-9999", "USA");
 
+    Customer customer =
+        new Customer(
+            UUID.randomUUID(), "Barney", "Rubble", "barney@rubble.com", "310 878 9999", address);
     PurchaseItem purchaseItem1 =
         new PurchaseItem(
             UUID.randomUUID(),
@@ -64,9 +65,9 @@ public class App {
             new BigDecimal("4.99"),
             address,
             address);
+
     ShoppingCartActor.AddItem item3 = new ShoppingCartActor.AddItem(purchaseItem3);
 
-    // purchaseItems.add(purchaseItem3);
     shoppingCartActor.tell(item3);
 
     // Checkout
@@ -76,14 +77,16 @@ public class App {
     // Pay
     String firstName = customer.getFirstName();
     String lastName = customer.getLastName();
-    CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
+    CreditCard creditCard =
+        new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
     PaymentActor.PaymentInfo paymentInfo =
         new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard);
     shoppingCartActor.tell(paymentInfo);
 
     // Ship
+
     ShipperActor.ShipmentInfo shipmentInfo =
-        new ShipperActor.ShipmentInfo(UUID.randomUUID(), MockHelper.getShipper());
+        new ShipperActor.ShipmentInfo(UUID.randomUUID(), "FEDEX");
     shoppingCartActor.tell(shipmentInfo);
 
     // Reset Cart

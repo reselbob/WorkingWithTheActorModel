@@ -1,9 +1,6 @@
 package barryspeanuts;
 
-import barryspeanuts.model.Address;
-import barryspeanuts.model.CreditCard;
-import barryspeanuts.model.Customer;
-import barryspeanuts.model.PurchaseItem;
+import barryspeanuts.model.*;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.common.RetryOptions;
@@ -84,7 +81,7 @@ public class App {
               "Barry's Deluxe Peanuts:",
               3,
               new BigDecimal("12.99"),
-              5));
+              new BigDecimal("5")));
 
       purchaseItems.add(
           new PurchaseItem(
@@ -93,7 +90,7 @@ public class App {
               "Barry's Smoked Peanuts",
               5,
               new BigDecimal("25.99"),
-              2));
+              new BigDecimal("2")));
 
       purchaseItems.add(
           new PurchaseItem(
@@ -102,12 +99,9 @@ public class App {
               "Barry's Soft Shell Peanuts",
               1,
               new BigDecimal("9.99"),
-              1));
+              new BigDecimal("1")));
 
       wf.addItems(purchaseItems);
-
-      // Checkout
-      wf.checkOut();
 
       // for now, let just get the Customer from the first PurchaseItem
       String firstName = purchaseItems.get(0).getCustomer().getFirstName();
@@ -115,14 +109,11 @@ public class App {
       CreditCard creditCard =
           new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
 
-      // Pay, using the Customer's base address
-      wf.pay(customer.getAddress(), creditCard);
+      // Checkout using the customer's base address as the billing and shipping addresses
+      CheckoutInfo checkoutInfo =
+          new CheckoutInfo(creditCard, customer.getAddress(), customer.getAddress(), "FEDEX");
 
-      // Ship, using the Customer's base address
-      wf.ship(customer.getAddress(), "FEDEX");
-
-      // Empty out the cart
-      wf.removeAllItems();
+      wf.checkOut(checkoutInfo);
 
       // Exit the workflow
       wf.exit();

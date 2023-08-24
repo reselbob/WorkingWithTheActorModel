@@ -67,7 +67,6 @@ public class ShipperActor extends AbstractBehavior<Object> {
   }
 
   public static class ShipmentInfo {
-
     private final UUID id;
     private final String shipper;
     private Purchase purchase;
@@ -95,10 +94,9 @@ public class ShipperActor extends AbstractBehavior<Object> {
   }
 
   public static class ShippingReceipt {
-
-    String shipper;
-    Purchase purchase;
-    Date shipDate;
+    private final String shipper;
+    private final Purchase purchase;
+    private final Date shipDate;
 
     public ShippingReceipt(String shipper, Purchase purchase, Date shipDate) {
       this.shipper = shipper;
@@ -110,7 +108,7 @@ public class ShipperActor extends AbstractBehavior<Object> {
       return shipper;
     }
 
-    Purchase getPurchas() {
+    public Purchase getPurchase() {
       return this.purchase;
     }
 

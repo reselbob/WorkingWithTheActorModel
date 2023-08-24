@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class Purchase {
-
-  UUID id;
-  List<PurchaseItem> purchaseItems;
-  Date purchaseDate;
+  private UUID id;
+  private List<PurchaseItem> purchaseItems;
+  private Date purchaseDate;
 
   /*
   Add a parameterless constructor and setters to make this serializable

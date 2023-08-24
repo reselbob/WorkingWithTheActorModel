@@ -7,7 +7,6 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import barryspeanuts.helper.MockHelper;
 import barryspeanuts.model.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -57,9 +56,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     // Tell the Payment Actor to pay
     ActorRef<Object> paymentActor = ActorSystem.create(PaymentActor.create(), "paymentActor");
     Customer customer = this.purchase.getPurchaseItems().get(0).getCustomer();
-    String firstName = customer.getFirstName();
-    String lastName = customer.getLastName();
-    CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
+    CreditCard creditCard = msg.getCreditCard();
     BigDecimal totalAmount =
         this.purchase.getPurchaseItems().stream()
             .map(PurchaseItem::getTotal)
@@ -74,7 +71,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   private Behavior<Object> handleShipping(ShipperActor.ShipmentInfo msg) {
     // Tell the Shipper to ship
     ActorRef<Object> shipperActor = ActorSystem.create(ShipperActor.create(), "shipperActor");
-    String shipper = MockHelper.getShipper();
+    String shipper = msg.getShipper();
     ShipperActor.ShipmentInfo shippingInfo =
         new ShipperActor.ShipmentInfo(UUID.randomUUID(), shipper);
     shippingInfo.setPurchase(this.purchase);
@@ -102,7 +99,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   public static class AddItem {
-    PurchaseItem purchaseItem;
+    private final PurchaseItem purchaseItem;
 
     public AddItem(PurchaseItem purchaseItem) {
       this.purchaseItem = purchaseItem;
@@ -114,7 +111,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   public static class RemoveItem {
-    PurchaseItem purchaseItem;
+    private final PurchaseItem purchaseItem;
 
     public RemoveItem(PurchaseItem purchaseItem) {
       this.purchaseItem = purchaseItem;
@@ -126,7 +123,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   public static class ResetCart {
-    Date resetCartDate;
+    private final Date resetCartDate;
 
     public ResetCart() {
       this.resetCartDate = new Date();
@@ -138,19 +135,12 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   }
 
   public static class CheckoutCart {
-    Date checkoutCartDate;
-
-    // UUID purchaseId;
+    private final Date checkoutCartDate;
 
     public CheckoutCart() {
       this.checkoutCartDate = new Date();
-      // this.purchaseId = purchaseId;
     }
 
-    /*   public UUID getPurchaseId() {
-          //return this.purchaseId;
-        }
-    */
     public Date getCheckoutCartDate() {
       return checkoutCartDate;
     }

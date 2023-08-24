@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class Purchase {
+  private final UUID id;
+  List<PurchaseItem> purchaseItems;
 
   public Purchase(UUID id) {
     this.id = id;
     this.purchaseItems = new ArrayList<>();
   }
-
-  UUID id;
-  List<PurchaseItem> purchaseItems;
 
   public void add(PurchaseItem purchaseItem) {
     this.purchaseItems.add(purchaseItem);

@@ -1,22 +1,19 @@
 package barryspeanuts;
 
-import barryspeanuts.model.Address;
-import barryspeanuts.model.CreditCard;
+import barryspeanuts.model.CheckoutInfo;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.workflow.Workflow;
 import io.temporal.workflow.WorkflowQueue;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   private static final Logger logger = Workflow.getLogger(ShoppingCartWorkflowImpl.class);
-  private boolean exit = false;
-
   private final List<PurchaseItem> purchaseItems = new ArrayList<>();
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
+  private boolean exit = false;
 
   @Override
   public void startWorkflow() {
@@ -40,39 +37,38 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   }
 
   @Override
-  public void checkOut() {
-    logger.info("Checking out {} purchase items.", this.purchaseItems.toArray().length);
-  }
+  public void checkOut(CheckoutInfo checkoutInfo) {
 
-  @Override
-  public void pay(Address billingAddress, CreditCard creditCard) {
-    for (PurchaseItem purchaseItem : this.purchaseItems) {
-      purchaseItem.setBillingAddress(Optional.ofNullable(billingAddress));
-    }
+    // pay
+    JSONObject billingAddress = new JSONObject(checkoutInfo.getBillingAddress());
 
-    JSONObject jsonObj = new JSONObject(billingAddress);
+    JSONObject creditCard = new JSONObject(checkoutInfo.getCreditCard());
+
     logger.info(
         "Paying for purchase using credit card number {} for {} purchase item at billing address {}.",
-        creditCard.getNumber(),
+        creditCard,
         this.purchaseItems.toArray().length,
-        billingAddress.toString());
-  }
+        billingAddress);
 
-  @Override
-  public void ship(Address shippingAddress, String shipper) {
-    for (PurchaseItem purchaseItem : this.purchaseItems) {
-      purchaseItem.setShippingAddress(Optional.ofNullable(shippingAddress));
-    }
+    // ship
+    JSONObject shippingAddress = new JSONObject(checkoutInfo.getShippingAddress());
 
-    JSONObject jsonObj = new JSONObject(shippingAddress);
     logger.info(
         "Shipping {} purchase items using {} to shipping address {}.",
         this.purchaseItems.toArray().length,
-        shipper,
-        jsonObj);
+        checkoutInfo.getShipper(),
+        shippingAddress);
+
+    // remove items from
+    logger.info(
+        "Removing {} purchase items from the Shopping Cart. The Shopping Cart is now clear.",
+        this.purchaseItems.toArray().length);
+    this.purchaseItems.clear();
   }
 
-  @Override
+  /*
+  This is a convenience method to clear the Shopping cart
+   */
   public void removeAllItems() {
     logger.info("Removing {} purchase items.", this.purchaseItems.toArray().length);
 
