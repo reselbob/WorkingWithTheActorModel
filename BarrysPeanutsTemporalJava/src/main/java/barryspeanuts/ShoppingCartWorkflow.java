@@ -18,9 +18,6 @@ public interface ShoppingCartWorkflow {
   List<PurchaseItem> queryPurchaseItems();
 
   @SignalMethod
-  void addItem(PurchaseItem purchaseItem);
-
-  @SignalMethod
   void addItems(List<PurchaseItem> purchaseItems);
 
   @SignalMethod

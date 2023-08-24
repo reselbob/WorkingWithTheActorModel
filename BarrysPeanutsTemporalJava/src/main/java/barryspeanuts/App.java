@@ -1,11 +1,10 @@
 package barryspeanuts;
 
-import barryspeanuts.mock.MockHelper;
+import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import io.temporal.client.WorkflowClient;
-import io.temporal.client.WorkflowException;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.common.RetryOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
@@ -19,11 +18,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BarrysPeanutsExecutor {
-
+public class App {
   static final String TASK_QUEUE = "BarryPeanutsTemporal";
   static final String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
-  private static final Logger logger = LoggerFactory.getLogger(BarrysPeanutsExecutor.class);
+  private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   @SuppressWarnings("CatchAndPrintStackTrace")
   public static void main(String[] args) {
@@ -45,7 +43,7 @@ public class BarrysPeanutsExecutor {
 
     // Start all workers created by this factory.
     factory.start();
-    logger.info("Worker started for task queue: {} with WorkflowID : {}", TASK_QUEUE, WORKFLOW_ID);
+    logger.info("Worker started for task queue: {} with WorkflowID : {}.", TASK_QUEUE, WORKFLOW_ID);
 
     // now we can start running instances of our workflow - its state will be persisted
     WorkflowOptions options =
@@ -62,57 +60,75 @@ public class BarrysPeanutsExecutor {
 
     ShoppingCartWorkflow wf = client.newWorkflowStub(ShoppingCartWorkflow.class, options);
     try {
+      Address address =
+          new Address("123 Main Street", "Apt 1", "Anytown", "CA", "99999-9999", "USA");
 
-      PurchaseItem purchaseItem = MockHelper.getPurchaseItem();
+      Customer customer =
+          new Customer(
+              UUID.randomUUID(),
+              "Josiah",
+              "Bartlet",
+              "prez@whitehouse.gove",
+              "202 456 1414",
+              address);
+
       WorkflowClient.start(wf::startWorkflow);
-      // Add some purchase items to the workflow for processing
-      wf.addItem(purchaseItem);
 
-      List<PurchaseItem> otherPurchaseItems = new ArrayList<>();
+      // Create purchase items and add them to the Shopping Cart
+      List<PurchaseItem> purchaseItems = new ArrayList<>();
 
-      otherPurchaseItems.add(
-          MockHelper.getPurchaseItem("Barry's Smoked Peanuts", 3, new BigDecimal("17.99"), 3));
+      purchaseItems.add(
+          new PurchaseItem(
+              UUID.randomUUID(),
+              customer,
+              "Barry's Deluxe Peanuts:",
+              3,
+              new BigDecimal("12.99"),
+              5));
 
-      otherPurchaseItems.add(
-          MockHelper.getPurchaseItem("Barry's Smoked Peanuts", 5, new BigDecimal("25.99"), 2));
+      purchaseItems.add(
+          new PurchaseItem(
+              UUID.randomUUID(),
+              customer,
+              "Barry's Smoked Peanuts",
+              5,
+              new BigDecimal("25.99"),
+              2));
 
-      otherPurchaseItems.add(
-          MockHelper.getPurchaseItem("Barry's Soft Shell Peanuts", 1, new BigDecimal("9.99"), 1));
+      purchaseItems.add(
+          new PurchaseItem(
+              UUID.randomUUID(),
+              customer,
+              "Barry's Soft Shell Peanuts",
+              1,
+              new BigDecimal("9.99"),
+              1));
 
-      wf.addItems(otherPurchaseItems);
+      wf.addItems(purchaseItems);
 
       // Checkout
       wf.checkOut();
-      // TODO Use the Temporal Saga Library
-      //
-      // (https://www.javadoc.io/static/io.temporal/temporal-sdk/1.0.0/io/temporal/workflow/Saga.html)
-      //  to create a compensation if something goes wrong with Checkout
 
       // for now, let just get the Customer from the first PurchaseItem
-      String firstName = purchaseItem.getCustomer().getFirstName();
-      String lastName = purchaseItem.getCustomer().getLastName();
-      CreditCard creditCard = MockHelper.getCreditCard(firstName, lastName);
-
-      // For purposes of demonstration, get the customer from the first purchase item
-      Customer customer = purchaseItem.getCustomer();
+      String firstName = purchaseItems.get(0).getCustomer().getFirstName();
+      String lastName = purchaseItems.get(0).getCustomer().getLastName();
+      CreditCard creditCard =
+          new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
 
       // Pay, using the Customer's base address
       wf.pay(customer.getAddress(), creditCard);
-      // TODO Create a compensation for Pay
 
       // Ship, using the Customer's base address
       wf.ship(customer.getAddress(), "FEDEX");
-      // TODO Create a compensation for Ship
 
       // Empty out the cart
       wf.removeAllItems();
-      // TODO Create a compensation for completing the Shopping Cart
 
       // Exit the workflow
       wf.exit();
 
-    } catch (WorkflowException e) {
-      // TODO Execute Saga.compensate() here
+    } catch (Exception e) {
+      // Just rethrow for now
       throw e;
     }
     logger.info("Nothing left to do, so the Executor will exit. That's all folks!");

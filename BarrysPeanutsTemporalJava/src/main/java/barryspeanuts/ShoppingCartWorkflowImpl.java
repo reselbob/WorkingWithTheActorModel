@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   private static final Logger logger = Workflow.getLogger(ShoppingCartWorkflowImpl.class);
+  private boolean exit = false;
 
-  boolean exit = false;
-  List<PurchaseItem> purchaseItems = new ArrayList<>();
+  private final List<PurchaseItem> purchaseItems = new ArrayList<>();
   private final WorkflowQueue<Runnable> queue = Workflow.newWorkflowQueue(1024);
 
   @Override
@@ -27,11 +27,6 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   @Override
   public List<PurchaseItem> queryPurchaseItems() {
     return this.purchaseItems;
-  }
-
-  @Override
-  public void addItem(PurchaseItem purchaseItem) {
-    this.purchaseItems.add(purchaseItem);
   }
 
   @Override
@@ -60,7 +55,7 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
         "Paying for purchase using credit card number {} for {} purchase item at billing address {}.",
         creditCard.getNumber(),
         this.purchaseItems.toArray().length,
-        jsonObj);
+        billingAddress.toString());
   }
 
   @Override
@@ -79,7 +74,6 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void removeAllItems() {
-
     logger.info("Removing {} purchase items.", this.purchaseItems.toArray().length);
 
     this.purchaseItems.clear();

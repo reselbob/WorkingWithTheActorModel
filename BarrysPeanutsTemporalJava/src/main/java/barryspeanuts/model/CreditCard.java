@@ -8,7 +8,7 @@ public class CreditCard {
   private int securityCode;
 
   /*
-  Add a parameterless constructor and setters to avoid complaints
+  Add a parameterless constructor and setters to make this serializable
   by the serializer.
   */
   public CreditCard() {}
