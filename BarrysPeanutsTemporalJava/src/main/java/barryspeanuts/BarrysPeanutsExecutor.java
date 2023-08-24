@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class BarrysPeanutsExecutor {
 
-  static final String TASK_QUEUE = "BarryPeanutsJava";
+  static final String TASK_QUEUE = "BarryPeanutsTemporal";
   static final String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
   private static final Logger logger = LoggerFactory.getLogger(BarrysPeanutsExecutor.class);
 
