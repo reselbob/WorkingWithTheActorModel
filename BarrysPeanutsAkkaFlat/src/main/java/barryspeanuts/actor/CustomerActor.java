@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class CustomerActor extends AbstractBehavior<Object> {
-
   private CustomerActor(ActorContext<Object> context) {
     super(context);
   }

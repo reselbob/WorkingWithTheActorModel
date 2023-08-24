@@ -104,8 +104,8 @@ public class App {
       wf.addItems(purchaseItems);
 
       // for now, let just get the Customer from the first PurchaseItem
-      String firstName = purchaseItems.get(0).getCustomer().getFirstName();
-      String lastName = purchaseItems.get(0).getCustomer().getLastName();
+      String firstName = customer.getFirstName();
+      String lastName = customer.getLastName();
       CreditCard creditCard =
           new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
 
