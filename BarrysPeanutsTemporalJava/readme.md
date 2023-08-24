@@ -70,10 +70,9 @@ temporal server start-dev --ip 0.0.0.0
 
 ---
 
-## (4) Optional, clean out the prior Maven packages
+## (4) Do some maven housecleaning
 
-If you are running this code after running the Barry's Peanuts Akka Flat demonstration project that part of this repository, clean out
-the packages by running the following commmand.
+Run the following command in a new terminal window to create a fresh Maven environment:
 
 ```bash
 mvn clean package install
@@ -81,7 +80,7 @@ mvn clean package install
 
 ## (5) Start the application
 
-In yet another separate terminal window run:
+In that same terminal window run:
 
 ```bash
 mvn exec:java -Dexec.mainClass="barryspeanuts.BarrysPeanutsExecutor"
