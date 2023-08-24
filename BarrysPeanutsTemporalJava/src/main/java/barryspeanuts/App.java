@@ -103,7 +103,7 @@ public class App {
 
       wf.addItems(purchaseItems);
 
-      // for now, let just get the Customer from the first PurchaseItem
+      // Get the customer information for the credit card
       String firstName = customer.getFirstName();
       String lastName = customer.getLastName();
       CreditCard creditCard =
