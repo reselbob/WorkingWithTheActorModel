@@ -6,9 +6,16 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
-import barryspeanuts.model.*;
+import barryspeanuts.model.Address;
+import barryspeanuts.model.CreditCard;
+import barryspeanuts.model.Customer;
+import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.Vector;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
   private final List<PurchaseItem> purchaseItems;
