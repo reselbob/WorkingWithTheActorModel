@@ -83,6 +83,6 @@ mvn clean package install
 In that same terminal window run:
 
 ```bash
-mvn exec:java -Dexec.mainClass="barryspeanuts.BarrysPeanutsExecutor"
+mvn exec:java -Dexec.mainClass="barryspeanuts.App"
 ```
 
