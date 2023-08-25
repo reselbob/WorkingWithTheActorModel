@@ -1,8 +1,6 @@
 package barryspeanuts;
 
 import akka.actor.typed.ActorSystem;
-import barryspeanuts.actor.PaymentActor;
-import barryspeanuts.actor.ShipperActor;
 import barryspeanuts.actor.ShoppingCartActor;
 import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
@@ -26,6 +24,7 @@ public class App {
         new Customer(
             UUID.randomUUID(), "Barney", "Rubble", "barney@rubble.com", "310 878 9999", address);
 
+    // Create some purchase items to add to the shopping cart
     List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     PurchaseItem purchaseItem1 =
@@ -41,13 +40,6 @@ public class App {
 
     purchaseItems.add(purchaseItem1);
 
-    ShoppingCartActor.AddItem item1 = new ShoppingCartActor.AddItem(purchaseItem1);
-
-    ActorSystem<Object> shoppingCartActor =
-        ActorSystem.create(ShoppingCartActor.create(), "shoppingCartActor");
-
-    shoppingCartActor.tell(item1);
-
     PurchaseItem purchaseItem2 =
         new PurchaseItem(
             UUID.randomUUID(),
@@ -60,10 +52,6 @@ public class App {
             address);
 
     purchaseItems.add(purchaseItem2);
-
-    ShoppingCartActor.AddItem item2 = new ShoppingCartActor.AddItem(purchaseItem2);
-
-    shoppingCartActor.tell(item2);
 
     PurchaseItem purchaseItem3 =
         new PurchaseItem(
@@ -78,13 +66,17 @@ public class App {
 
     purchaseItems.add(purchaseItem3);
 
-    ShoppingCartActor.AddItem item3 = new ShoppingCartActor.AddItem(purchaseItem3);
+    // Create the shopping cart actor
+    ActorSystem<Object> shoppingCartActor =
+        ActorSystem.create(ShoppingCartActor.create(), "shoppingCartActor");
 
-    shoppingCartActor.tell(item3);
+    // Create an instance of the AddItems behavior
+    ShoppingCartActor.AddItems shoppingCartItems = new ShoppingCartActor.AddItems(purchaseItems);
 
-    // Checkout
-    ShoppingCartActor.CheckoutCart checkout = new ShoppingCartActor.CheckoutCart();
-    shoppingCartActor.tell(checkout);
+    // Pass the AddItems message on to the ShoppingCartActor
+    shoppingCartActor.tell(shoppingCartItems);
+
+    // Prepare for checkout
 
     // Get  the credit card
     String firstName = customer.getFirstName();
@@ -92,23 +84,14 @@ public class App {
     CreditCard creditCard =
         new CreditCard(firstName + " " + lastName, "1111222233334444", 8, 26, 111);
 
-    BigDecimal purchaseTotal = new BigDecimal("0");
-    for (PurchaseItem purchaseItem : purchaseItems) {
-      purchaseTotal = purchaseTotal.add(purchaseItem.getTotal());
-    }
+    // Use the customer's base address for billing and shipping
+    Address billingAddress = customer.getAddress();
+    Address shippingAddress = customer.getAddress();
+    String shipper = "FEDEX";
 
-    PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard, purchaseTotal);
-    shoppingCartActor.tell(paymentInfo);
-
-    // Ship
-
-    ShipperActor.ShipmentInfo shipmentInfo =
-        new ShipperActor.ShipmentInfo(UUID.randomUUID(), purchaseItems, "FEDEX");
-    shoppingCartActor.tell(shipmentInfo);
-
-    // Reset Cart
-    ShoppingCartActor.EmptyCart resetCart = new ShoppingCartActor.EmptyCart();
-    shoppingCartActor.tell(resetCart);
+    // Checkout
+    ShoppingCartActor.Checkout checkout =
+        new ShoppingCartActor.Checkout(creditCard, billingAddress, shippingAddress, shipper);
+    shoppingCartActor.tell(checkout);
   }
 }

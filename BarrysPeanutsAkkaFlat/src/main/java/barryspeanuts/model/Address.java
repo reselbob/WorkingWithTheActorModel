@@ -1,5 +1,7 @@
 package barryspeanuts.model;
 
+import org.json.JSONObject;
+
 public class Address {
   private final String address1;
   private final String address2;
@@ -45,5 +47,10 @@ public class Address {
 
   public String getCountryCode() {
     return countryCode;
+  }
+
+  @Override
+  public String toString() {
+    return new JSONObject(this).toString();
   }
 }

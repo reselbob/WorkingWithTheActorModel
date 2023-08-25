@@ -1,6 +1,5 @@
 package barryspeanuts.actor;
 
-import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
@@ -9,15 +8,14 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.model.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class ShoppingCartActor extends AbstractBehavior<Object> {
-  private final Purchase purchase;
+  private final List<PurchaseItem> purchaseItems;
 
   private ShoppingCartActor(ActorContext<Object> context) {
     super(context);
-    this.purchase = new Purchase(UUID.randomUUID());
+    this.purchaseItems = new ArrayList<>();
   }
 
   public static Behavior<Object> create() {
@@ -27,84 +25,100 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
   @Override
   public Receive<Object> createReceive() {
     return newReceiveBuilder()
-        .onMessage(AddItem.class, this::handleAddItem)
+        .onMessage(AddItems.class, this::handleAddItems)
         .onMessage(RemoveItem.class, this::handleRemoveItem)
         .onMessage(EmptyCart.class, this::handleEmptyCart)
-        .onMessage(CheckoutCart.class, this::handleCheckoutCart)
-        .onMessage(PaymentActor.PaymentInfo.class, this::handlePayment)
-        .onMessage(ShipperActor.ShipmentInfo.class, this::handleShipping)
+        .onMessage(Checkout.class, this::handleCheckoutCart)
         .build();
   }
 
-  private Behavior<Object> handleAddItem(AddItem msg) {
-    this.purchase.getPurchaseItems().add(msg.getPurchaseItem());
+  private Behavior<Object> handleAddItems(AddItems msg) {
+    this.purchaseItems.addAll(msg.getPurchaseItems());
     return this;
   }
 
   private Behavior<Object> handleRemoveItem(RemoveItem msg) {
-    this.purchase.remove(msg.purchaseItem);
+    this.purchaseItems.remove(msg.purchaseItem);
     return this;
   }
 
   private Behavior<Object> handleEmptyCart(EmptyCart msg) {
     getContext().getLog().info("ShoppingCart is emptying the cart.");
-    this.purchase.getPurchaseItems().clear();
+    this.purchaseItems.clear();
     return this;
   }
 
-  private Behavior<Object> handlePayment(PaymentActor.PaymentInfo msg) {
-    // Tell the Payment Actor to pay
-    ActorRef<Object> paymentActor = ActorSystem.create(PaymentActor.create(), "paymentActor");
-    Customer customer = this.purchase.getPurchaseItems().get(0).getCustomer();
-    CreditCard creditCard = msg.getCreditCard();
-    BigDecimal totalAmount =
-        this.purchase.getPurchaseItems().stream()
-            .map(PurchaseItem::getTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    PaymentActor.PaymentInfo paymentInfo =
-        new PaymentActor.PaymentInfo(UUID.randomUUID(), customer, creditCard, totalAmount);
-    paymentActor.tell(paymentInfo);
-    return this;
-  }
+  private Behavior<Object> handleCheckoutCart(Checkout msg) {
+    if (this.purchaseItems.size() == 0) {
+      throw new RuntimeException("No purchase items to checkout");
+    }
 
-  private Behavior<Object> handleShipping(ShipperActor.ShipmentInfo msg) {
-    // Tell the Shipper to ship
-    ActorRef<Object> shipperActor = ActorSystem.create(ShipperActor.create(), "shipperActor");
-    String shipper = msg.getShipper();
-    ShipperActor.ShipmentInfo shippingInfo =
-        new ShipperActor.ShipmentInfo(UUID.randomUUID(), msg.getPurchaseItems(), "FEDEX");
-    shipperActor.tell(shippingInfo);
-    return this;
-  }
+    // Use the customer in the first purchase item as the customer
+    Customer customer = purchaseItems.get(0).getCustomer();
 
-  private Behavior<Object> handleCheckoutCart(CheckoutCart msg) {
-    String firstName = this.purchase.getPurchaseItems().get(0).getCustomer().getFirstName();
-    String lastName = this.purchase.getPurchaseItems().get(0).getCustomer().getLastName();
+    String firstName = customer.getFirstName();
+    String lastName = customer.getLastName();
     getContext()
         .getLog()
         .info(
-            "{} {} is starting a checkout of {} items.",
+            "Starting a checkout of {} items for {} {} .",
+            purchaseItems.size(),
+            firstName,
+            lastName);
+
+    // Do the payment
+    BigDecimal totalAmount =
+        this.purchaseItems.stream()
+            .map(PurchaseItem::getTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    getContext()
+        .getLog()
+        .info(
+            "{} {} is paying for {} items for the total amount of {} using credit card {}.",
             firstName,
             lastName,
-            this.purchase.getPurchaseItems().toArray().length);
+            this.purchaseItems.size(),
+            totalAmount,
+            msg.getCreditCard().toString());
 
-    // Tell the CheckOut Actor to check out
-    ActorRef<Object> checkoutActor = ActorSystem.create(CheckOutActor.create(), "checkoutActor");
-    CheckOutActor.StartCheckout startCheckout =
-        new CheckOutActor.StartCheckout(this.purchase.getId());
-    checkoutActor.tell(startCheckout);
+    // Send a payment receipt to the customer as a fire and forget message
+    CustomerActor.PaymentReceipt paymentReceipt =
+        new CustomerActor.PaymentReceipt(UUID.randomUUID(), customer, totalAmount);
+    ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
+    customerActor.tell(paymentReceipt);
+
+    // Do the shipping
+    getContext()
+        .getLog()
+        .info(
+            "{} is shipping {} purchase items to {} for customer {} {}.",
+            msg.getShipper(),
+            this.purchaseItems.size(),
+            msg.getShippingAddres().toString(),
+            firstName,
+            lastName);
+
+    // Send a shipping receipt to the customer as a fire and forget message
+    CustomerActor.ShippingReceipt shippingReceipt =
+        new CustomerActor.ShippingReceipt(
+            UUID.randomUUID(), customer, new Vector<>(purchaseItems), msg.getShipper());
+    customerActor.tell(shippingReceipt);
+
+    this.purchaseItems.clear();
+
     return this;
   }
 
-  public static class AddItem {
-    private final PurchaseItem purchaseItem;
+  public static class AddItems {
+    private final List<PurchaseItem> purchaseItems;
 
-    public AddItem(PurchaseItem purchaseItem) {
-      this.purchaseItem = purchaseItem;
+    public AddItems(List<PurchaseItem> purchaseItems) {
+      this.purchaseItems = purchaseItems;
     }
 
-    public PurchaseItem getPurchaseItem() {
-      return purchaseItem;
+    public List<PurchaseItem> getPurchaseItems() {
+      return this.purchaseItems;
     }
   }
 
@@ -116,7 +130,7 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     }
 
     public PurchaseItem getPurchaseItem() {
-      return purchaseItem;
+      return this.purchaseItem;
     }
   }
 
@@ -128,19 +142,38 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
     }
 
     public Date getEmptyCartDate() {
-      return emptyCartDate;
+      return this.emptyCartDate;
     }
   }
 
-  public static class CheckoutCart {
-    private final Date checkoutCartDate;
+  public static class Checkout {
+    private final CreditCard creditCard;
+    private final Address billingAddress;
+    private final Address shippingAddress;
+    private final String shipper;
 
-    public CheckoutCart() {
-      this.checkoutCartDate = new Date();
+    public Checkout(
+        CreditCard creditCard, Address billingAddress, Address shippingAddress, String shipper) {
+      this.creditCard = creditCard;
+      this.billingAddress = billingAddress;
+      this.shippingAddress = shippingAddress;
+      this.shipper = shipper;
     }
 
-    public Date getCheckoutCartDate() {
-      return checkoutCartDate;
+    public CreditCard getCreditCard() {
+      return this.creditCard;
+    }
+
+    public Address getBillingAddress() {
+      return this.billingAddress;
+    }
+
+    public Address getShippingAddres() {
+      return this.shippingAddress;
+    }
+
+    public String getShipper() {
+      return this.shipper;
     }
   }
 }

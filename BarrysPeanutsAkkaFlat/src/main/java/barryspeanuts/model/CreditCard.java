@@ -1,5 +1,7 @@
 package barryspeanuts.model;
 
+import org.json.JSONObject;
+
 public class CreditCard {
   private final String nameOnCard;
   private final String creditCardNumber;
@@ -38,5 +40,10 @@ public class CreditCard {
 
   public Integer getSecurityCode() {
     return securityCode;
+  }
+
+  @Override
+  public String toString() {
+    return new JSONObject(this).toString();
   }
 }

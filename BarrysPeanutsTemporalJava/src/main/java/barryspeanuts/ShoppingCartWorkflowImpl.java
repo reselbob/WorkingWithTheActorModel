@@ -6,7 +6,6 @@ import io.temporal.workflow.Workflow;
 import io.temporal.workflow.WorkflowQueue;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 
 public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
@@ -38,26 +37,17 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
 
   @Override
   public void checkOut(CheckoutInfo checkoutInfo) {
-
-    // pay
-    JSONObject billingAddress = new JSONObject(checkoutInfo.getBillingAddress());
-
-    JSONObject creditCard = new JSONObject(checkoutInfo.getCreditCard());
-
     logger.info(
         "Paying for purchase using credit card number {} for {} purchase item at billing address {}.",
-        creditCard,
+        checkoutInfo.getCreditCard(),
         this.purchaseItems.toArray().length,
-        billingAddress);
-
-    // ship
-    JSONObject shippingAddress = new JSONObject(checkoutInfo.getShippingAddress());
+        checkoutInfo.getBillingAddress());
 
     logger.info(
         "Shipping {} purchase items using {} to shipping address {}.",
         this.purchaseItems.toArray().length,
         checkoutInfo.getShipper(),
-        shippingAddress);
+        checkoutInfo.getShippingAddress());
 
     // remove items from
     logger.info(

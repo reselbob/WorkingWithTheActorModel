@@ -1,5 +1,7 @@
 package barryspeanuts.model;
 
+import org.json.JSONObject;
+
 public class CreditCard {
   private String fullName;
   private String number;
@@ -44,5 +46,10 @@ public class CreditCard {
 
   public void setFullName(String fullName) {
     this.fullName = fullName;
+  }
+
+  @Override
+  public String toString() {
+    return new JSONObject(this).toString();
   }
 }

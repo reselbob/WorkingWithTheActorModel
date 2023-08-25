@@ -8,8 +8,8 @@ import akka.actor.typed.javadsl.Receive;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
+import java.util.Vector;
 
 public class CustomerActor extends AbstractBehavior<Object> {
   private CustomerActor(ActorContext<Object> context) {
@@ -32,9 +32,12 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received shipping confirmation by id {} for {} purchase items.",
+            "Customer {} {} received shipping confirmation id {} for {} purchase items shipped via {}.",
+            msg.getCustomer().getFirstName(),
+            msg.getCustomer().getLastName(),
             msg.getId(),
-            msg.getPurchaseItems().size());
+            msg.getPurchaseItems().size(),
+            msg.getShipper());
     return this;
   }
 
@@ -42,28 +45,42 @@ public class CustomerActor extends AbstractBehavior<Object> {
     getContext()
         .getLog()
         .info(
-            "Received payment confirmation by id {} for customer {} {}.",
-            msg.getId(),
+            "Customer {} {} received payment confirmation id {} for the purchase total of {}.",
             msg.getCustomer().getFirstName(),
-            msg.getCustomer().getLastName());
+            msg.getCustomer().getLastName(),
+            msg.getId(),
+            msg.getPurchaseTotal());
     return this;
   }
 
   public static class ShippingReceipt {
     private final UUID id;
-    private final List<PurchaseItem> purchaseItems;
+    private final Customer customer;
+    private final Vector<PurchaseItem> purchaseItems;
+    private final String shipper;
 
-    public ShippingReceipt(UUID id, List<PurchaseItem> purchaseItems) {
+    public ShippingReceipt(
+        UUID id, Customer customer, Vector<PurchaseItem> purchaseItems, String shipper) {
       this.id = id;
+      this.customer = customer;
       this.purchaseItems = purchaseItems;
+      this.shipper = shipper;
     }
 
     public UUID getId() {
-      return id;
+      return this.id;
     }
 
-    public List<PurchaseItem> getPurchaseItems() {
-      return purchaseItems;
+    public Customer getCustomer() {
+      return this.customer;
+    }
+
+    public Vector<PurchaseItem> getPurchaseItems() {
+      return this.purchaseItems;
+    }
+
+    public String getShipper() {
+      return this.shipper;
     }
   }
 
@@ -79,15 +96,15 @@ public class CustomerActor extends AbstractBehavior<Object> {
     }
 
     public UUID getId() {
-      return id;
+      return this.id;
     }
 
     public Customer getCustomer() {
-      return customer;
+      return this.customer;
     }
 
     public BigDecimal getPurchaseTotal() {
-      return purchaseTotal;
+      return this.purchaseTotal;
     }
   }
 }
