@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class App {
   public static void main(String[] args) {
     Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
-    logger.info("{} is starting Barry's Gourmet Peanuts.", App.class);
+    logger.info("Starting Barry's Gourmet Peanuts.");
 
     Address address = new Address("123 Main Street", "Apt 1", "Anytown", "CA", "99999-9999", "USA");
 
@@ -76,7 +76,7 @@ public class App {
     // Pass the AddItems message on to the ShoppingCartActor
     shoppingCartActor.tell(shoppingCartItems);
 
-    // Prepare for checkout
+    // Prepare for checkout by creating the Credit Card as well as Billing and Shipping Addresses
 
     // Get  the credit card
     String firstName = customer.getFirstName();
