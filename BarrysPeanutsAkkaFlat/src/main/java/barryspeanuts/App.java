@@ -1,6 +1,8 @@
 package barryspeanuts;
 
-import akka.actor.typed.ActorSystem;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
 import barryspeanuts.actor.ShoppingCartActor;
 import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
@@ -16,7 +18,10 @@ import org.slf4j.LoggerFactory;
 public class App {
   public static void main(String[] args) {
     Logger logger = LoggerFactory.getLogger(ShoppingCartActor.class);
+
     logger.info("Starting Barry's Gourmet Peanuts.");
+
+    akka.actor.ActorSystem system = ActorSystem.create("BarrysPeanutsSystem");
 
     Address address = new Address("123 Main Street", "Apt 1", "Anytown", "CA", "99999-9999", "USA");
 
@@ -67,14 +72,14 @@ public class App {
     purchaseItems.add(purchaseItem3);
 
     // Create the shopping cart actor
-    ActorSystem<Object> shoppingCartActor =
-        ActorSystem.create(ShoppingCartActor.create(), "shoppingCartActor");
+    ActorRef shoppingCartActor =
+        system.actorOf(Props.create(ShoppingCartActor.class, system), "shoppingCartActor");
 
     // Create an instance of the AddItems behavior
     ShoppingCartActor.AddItems shoppingCartItems = new ShoppingCartActor.AddItems(purchaseItems);
 
     // Pass the AddItems message on to the ShoppingCartActor
-    shoppingCartActor.tell(shoppingCartItems);
+    shoppingCartActor.tell(shoppingCartItems, shoppingCartActor);
 
     // Prepare for checkout by creating the Credit Card as well as Billing and Shipping Addresses
 
@@ -92,6 +97,6 @@ public class App {
     // Checkout
     ShoppingCartActor.Checkout checkout =
         new ShoppingCartActor.Checkout(creditCard, billingAddress, shippingAddress, shipper);
-    shoppingCartActor.tell(checkout);
+    shoppingCartActor.tell(checkout, shoppingCartActor);
   }
 }

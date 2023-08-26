@@ -1,56 +1,49 @@
 package barryspeanuts.actor;
 
-import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import akka.actor.AbstractActor;
+import akka.actor.ActorSystem;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.Vector;
 
-public class CustomerActor extends AbstractBehavior<Object> {
-  private CustomerActor(ActorContext<Object> context) {
-    super(context);
-  }
+public class CustomerActor extends AbstractActor {
+  // We'll leave a reference to the base system
+  // in, just in case CustomerActor wants to use it later
+  // on
+  private final ActorSystem actorSystem;
+  private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-  public static Behavior<Object> create() {
-    return Behaviors.setup(CustomerActor::new);
+  public CustomerActor(ActorSystem actorSystem) {
+    this.actorSystem = actorSystem;
   }
 
   @Override
-  public Receive<Object> createReceive() {
-    return newReceiveBuilder()
-        .onMessage(CustomerActor.ShippingReceipt.class, this::handleShippingReceipt)
-        .onMessage(CustomerActor.PaymentReceipt.class, this::handlePaymentReceipt)
+  public Receive createReceive() {
+    return receiveBuilder()
+        .match(ShippingReceipt.class, this::handleShippingReceipt)
+        .match(PaymentReceipt.class, this::handlePaymentReceipt)
         .build();
   }
 
-  private Behavior<Object> handleShippingReceipt(CustomerActor.ShippingReceipt msg) {
-    getContext()
-        .getLog()
-        .info(
-            "Customer {} {} received shipping confirmation id {} for {} purchase items shipped via {}.",
-            msg.getCustomer().getFirstName(),
-            msg.getCustomer().getLastName(),
-            msg.getId(),
-            msg.getPurchaseItems().size(),
-            msg.getShipper());
-    return this;
+  private void handleShippingReceipt(CustomerActor.ShippingReceipt msg) {
+    this.log.info(
+        "Customer {}  received shipping confirmation id {} for {} purchase items shipped via {}.",
+        msg.getCustomer().getFirstName() + " " + msg.getCustomer().getLastName(),
+        msg.getId(),
+        msg.getPurchaseItems().size(),
+        msg.getShipper());
   }
 
-  private Behavior<Object> handlePaymentReceipt(CustomerActor.PaymentReceipt msg) {
-    getContext()
-        .getLog()
-        .info(
-            "Customer {} {} received payment confirmation id {} for the purchase total of {}.",
-            msg.getCustomer().getFirstName(),
-            msg.getCustomer().getLastName(),
-            msg.getId(),
-            msg.getPurchaseTotal());
-    return this;
+  private void handlePaymentReceipt(CustomerActor.PaymentReceipt msg) {
+    this.log.info(
+        "Customer {} received payment confirmation id {} for the purchase total of {}.",
+        msg.getCustomer().getFirstName() + " " + msg.getCustomer().getLastName(),
+        msg.getId(),
+        msg.getPurchaseTotal());
   }
 
   public static class ShippingReceipt {

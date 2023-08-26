@@ -1,11 +1,10 @@
 package barryspeanuts.actor;
 
-import akka.actor.typed.ActorSystem;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import barryspeanuts.model.Address;
 import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
@@ -17,45 +16,40 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-public class ShoppingCartActor extends AbstractBehavior<Object> {
-  private final List<PurchaseItem> purchaseItems;
+public class ShoppingCartActor extends AbstractActor {
+  // Declare the parent system
+  private final akka.actor.ActorSystem actorSystem;
+  private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+  private final List<PurchaseItem> purchaseItems = new ArrayList<>();
 
-  private ShoppingCartActor(ActorContext<Object> context) {
-    super(context);
-    this.purchaseItems = new ArrayList<>();
-  }
-
-  public static Behavior<Object> create() {
-    return Behaviors.setup(ShoppingCartActor::new);
+  public ShoppingCartActor(akka.actor.ActorSystem actorSystem) {
+    this.actorSystem = actorSystem;
   }
 
   @Override
-  public Receive<Object> createReceive() {
-    return newReceiveBuilder()
-        .onMessage(AddItems.class, this::handleAddItems)
-        .onMessage(RemoveItem.class, this::handleRemoveItem)
-        .onMessage(EmptyCart.class, this::handleEmptyCart)
-        .onMessage(Checkout.class, this::handleCheckoutCart)
+  public Receive createReceive() {
+    return receiveBuilder()
+        .match(AddItems.class, this::handleAddItems)
+        .match(RemoveItem.class, this::handleRemoveItem)
+        .match(EmptyCart.class, this::handleEmptyCart)
+        .match(Checkout.class, this::handleCheckoutCart)
         .build();
   }
 
-  private Behavior<Object> handleAddItems(AddItems msg) {
+  private void handleAddItems(AddItems msg) {
     this.purchaseItems.addAll(msg.getPurchaseItems());
-    return this;
   }
 
-  private Behavior<Object> handleRemoveItem(RemoveItem msg) {
+  private void handleRemoveItem(RemoveItem msg) {
     this.purchaseItems.remove(msg.purchaseItem);
-    return this;
   }
 
-  private Behavior<Object> handleEmptyCart(EmptyCart msg) {
-    getContext().getLog().info("ShoppingCart is emptying the cart.");
+  private void handleEmptyCart(EmptyCart msg) {
+    this.log.info("ShoppingCart is emptying the cart.");
     this.purchaseItems.clear();
-    return this;
   }
 
-  private Behavior<Object> handleCheckoutCart(Checkout msg) {
+  private void handleCheckoutCart(Checkout msg) {
     if (this.purchaseItems.size() == 0) {
       throw new RuntimeException("No purchase items to checkout");
     }
@@ -65,13 +59,8 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
 
     String firstName = customer.getFirstName();
     String lastName = customer.getLastName();
-    getContext()
-        .getLog()
-        .info(
-            "Starting a checkout of {} items for {} {} .",
-            purchaseItems.size(),
-            firstName,
-            lastName);
+    this.log.info(
+        "Starting a checkout of {} items for {} {} .", purchaseItems.size(), firstName, lastName);
 
     // Do the payment
     BigDecimal totalAmount =
@@ -79,42 +68,37 @@ public class ShoppingCartActor extends AbstractBehavior<Object> {
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    getContext()
-        .getLog()
-        .info(
-            "{} {} is paying for {} items for the total amount of {} using credit card {}.",
-            firstName,
-            lastName,
-            this.purchaseItems.size(),
-            totalAmount,
-            msg.getCreditCard().toString());
+    String ccStr = msg.getCreditCard().toString();
+
+    this.log.info(
+        "{} {} is paying {} using credit card {}.",
+        firstName,
+        lastName,
+        totalAmount,
+        msg.getCreditCard());
 
     // Send a payment receipt to the customer as a fire and forget message
     CustomerActor.PaymentReceipt paymentReceipt =
         new CustomerActor.PaymentReceipt(UUID.randomUUID(), customer, totalAmount);
-    ActorSystem<Object> customerActor = ActorSystem.create(CustomerActor.create(), "customerActor");
-    customerActor.tell(paymentReceipt);
+    ActorRef customerActor =
+        this.actorSystem.actorOf(
+            Props.create(CustomerActor.class, this.actorSystem), "customerActor");
+    customerActor.tell(paymentReceipt, customerActor);
 
     // Do the shipping
-    getContext()
-        .getLog()
-        .info(
-            "{} is shipping {} purchase items to {} for customer {} {}.",
-            msg.getShipper(),
-            this.purchaseItems.size(),
-            msg.getShippingAddres().toString(),
-            firstName,
-            lastName);
+    this.log.info(
+        "{} is shipping {} purchase items to {}",
+        msg.getShipper(),
+        this.purchaseItems.size(),
+        msg.billingAddress);
 
     // Send a shipping receipt to the customer as a fire and forget message
     CustomerActor.ShippingReceipt shippingReceipt =
         new CustomerActor.ShippingReceipt(
             UUID.randomUUID(), customer, new Vector<>(purchaseItems), msg.getShipper());
-    customerActor.tell(shippingReceipt);
+    customerActor.tell(shippingReceipt, customerActor);
 
     this.purchaseItems.clear();
-
-    return this;
   }
 
   public static class AddItems {
