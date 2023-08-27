@@ -13,9 +13,9 @@ Applications, by way of another Temporal component called a Client send signals 
 Temporal, a message is called a signal.)
 The Temporal workflow then responds to the signal received. (See Figure 1.)
 
-| ![Temporal Architecture](./images/TBP.png)                                 |
-|----------------------------------------------------------------------|
-| Figure 1: The Temporal architecture for implementing the Actor Model |
+| ![Temporal Architecture](./images/TBP.png)                                          |
+|-------------------------------------------------------------------------------------|
+| Figure 1: Adopting the Akka messaging style of communication to a Temporal Workflow |
 
 # Running the code:
 

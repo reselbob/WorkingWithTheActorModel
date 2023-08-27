@@ -9,9 +9,9 @@ the ShoppingCart fire off a message to the CheckOut actor. Once the checkout pro
 the Shopping cart then sends a message to the Payment actor to instigate payment behavior.
 After payment completes, the ShoppingCart sends a message to the Shipper actor to facilitate shipping. (See Figure 1.)
 
-| ![Flat Style](./images/TBP.png)                          |
-|----------------------------------------------------|
-| Figure 1: The flat actor-controller implementation |
+| ![Flat Style](./images/TBP.png)                      |
+|------------------------------------------------------|
+| Figure 1: The Akka implementation of the Actor Model |
 
 One benefit of the flat style is the ease of implementation as well as ease of maintenance.
 
