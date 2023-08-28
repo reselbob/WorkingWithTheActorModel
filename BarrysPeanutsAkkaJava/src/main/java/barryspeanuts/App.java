@@ -97,6 +97,7 @@ public class App {
     // Checkout
     ShoppingCartActor.Checkout checkout =
         new ShoppingCartActor.Checkout(creditCard, billingAddress, shippingAddress, shipper);
+
     shoppingCartActor.tell(checkout, shoppingCartActor);
   }
 }
