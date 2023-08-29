@@ -25,7 +25,6 @@ public class ShoppingCartActor extends AbstractActor {
   public ShoppingCartActor(akka.actor.ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
-
   @Override
   public Receive createReceive() {
     return receiveBuilder()

@@ -20,7 +20,6 @@ public class CustomerActor extends AbstractActor {
   public CustomerActor(ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
-
   @Override
   public Receive createReceive() {
     return receiveBuilder()
