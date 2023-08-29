@@ -1,8 +1,6 @@
 # Implementing a flattened version of the Actor model under Akka
 
-This project demonstrates implementing a Temporal Workflow using only using signals. Taking a "signaling only" 
-approach emulates the principle of the Actor Model that states that communication between actors is facilitated via
-messaging only.
+
 
 Figure 1 below illustrates the organization and operation of the demonstration project.
 
