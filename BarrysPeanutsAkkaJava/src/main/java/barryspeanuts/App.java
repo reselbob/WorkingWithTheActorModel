@@ -98,6 +98,7 @@ public class App {
     ShoppingCartActor.Checkout checkout =
         new ShoppingCartActor.Checkout(creditCard, billingAddress, shippingAddress, shipper);
 
+    // Send a checkout message to the ShoppingCartActor to start the checkout process
     shoppingCartActor.tell(checkout, shoppingCartActor);
   }
 }
