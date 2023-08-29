@@ -80,6 +80,7 @@ public class ShoppingCartActor extends AbstractActor {
     ActorRef customerActor =
         this.actorSystem.actorOf(
             Props.create(CustomerActor.class, this.actorSystem), "customerActor");
+
     customerActor.tell(paymentReceipt, customerActor);
 
     // Do the shipping
@@ -93,6 +94,7 @@ public class ShoppingCartActor extends AbstractActor {
     CustomerActor.ShippingReceipt shippingReceipt =
         new CustomerActor.ShippingReceipt(
             UUID.randomUUID(), customer, new Vector<>(purchaseItems), msg.getShipper());
+
     customerActor.tell(shippingReceipt, customerActor);
 
     this.purchaseItems.clear();
@@ -156,7 +158,7 @@ public class ShoppingCartActor extends AbstractActor {
       return this.billingAddress;
     }
 
-    public Address getShippingAddres() {
+    public Address getShippingAddress() {
       return this.shippingAddress;
     }
 
