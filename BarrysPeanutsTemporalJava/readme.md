@@ -1,10 +1,10 @@
 # Implementing the flattened style of the Actor Model under Temporal
 
-This project demonstrates implementing a Temporal Workflow using only using signals. Taking a "signaling only"
-approach emulates the principle of the Actor Model that states that communication between actors is facilitated via
-messaging only.
+This project demonstrates executing a Temporal Workflow behavior only using signals. Taking a "signal only"
+approach supports the principle of the Actor Model that states that communication between actors is facilitated via
+messaging only. Temporal supports signaling out of the box.
 
-Temporal supports signalling out of the box. Intrinsic to the Temporal framework are the Temporal Server and
+Intrinsic to the Temporal framework are the Temporal Server and
 Worker.
 
 You can think of the Temporal Server as a repository for storing information about the state of the workflow
