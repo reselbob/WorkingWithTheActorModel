@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 public class App {
   static final String TASK_QUEUE = "BarryPeanutsTemporal";
-  static final String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
   private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   @SuppressWarnings("CatchAndPrintStackTrace")
@@ -40,8 +39,11 @@ public class App {
 
     // Start all workers created by this factory.
     factory.start();
-    logger.info("Worker started for task queue: {} with WorkflowID : {}.", TASK_QUEUE, WORKFLOW_ID);
 
+    logger.info("Worker listening on task queue: {}.", TASK_QUEUE);
+
+    //Declare the WORKFLOW_ID
+    String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
     // now we can start running instances of our workflow - its state will be persisted
     WorkflowOptions options =
         WorkflowOptions.newBuilder()
