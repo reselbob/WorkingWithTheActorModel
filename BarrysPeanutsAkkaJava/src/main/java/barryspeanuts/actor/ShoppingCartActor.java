@@ -68,8 +68,6 @@ public class ShoppingCartActor extends AbstractActor {
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    String ccStr = msg.getCreditCard().toString();
-
     this.log.info(
         "{} {} is paying {} using credit card {}.",
         firstName,
