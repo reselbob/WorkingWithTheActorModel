@@ -1,6 +1,6 @@
 # Implementing a flattened version of the Actor model under Akka
 
-This project demonstrates an Akka application, written in Java the simulates the activities of an e-commerce shopping cart.
+This project demonstrates an Akka application, written in Java that simulates the activities of an e-commerce shopping cart.
 
 Figure 1 below illustrates the organization and operation of the demonstration project.
 
