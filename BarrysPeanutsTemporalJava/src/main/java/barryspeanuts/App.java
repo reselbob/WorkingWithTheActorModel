@@ -25,20 +25,8 @@ public class App {
     // client that can be used to start and signal workflows
     WorkflowClient client = WorkflowClient.newInstance(service);
 
-    // worker factory that can be used to create workers for specific task queues
-    WorkerFactory factory = WorkerFactory.newInstance(client);
-
-    // Worker that listens on a task queue and hosts both workflow and activity
-    // implementations.
-    Worker worker = factory.newWorker(TASK_QUEUE);
-
-    // Workflows are stateful. So you need a type to create instances.
-    worker.registerWorkflowImplementationTypes(ShoppingCartWorkflowImpl.class);
-
-    // Start all workers created by this factory.
-    factory.start();
-
-    logger.info("Worker listening on task queue: {}.", TASK_QUEUE);
+    //Start the worker and hold onto it for later use, if necessary.
+    Worker worker = startWorker(client);
 
     // Declare the WORKFLOW_ID
     String WORKFLOW_ID = TASK_QUEUE + "-" + "01";
@@ -111,10 +99,32 @@ public class App {
       //exit the workflow.
       wf.exit();
 
+      //
+
+
     } catch (Exception e) {
       // Just rethrow for now
       throw e;
     }
     logger.info("Nothing left to do, so the Executor will exit. That's all folks!");
+  }
+
+  private static Worker startWorker(WorkflowClient client) {
+    // worker factory that can be used to create workers for specific task queues
+    WorkerFactory factory = WorkerFactory.newInstance(client);
+
+    // Worker that listens on a task queue and hosts both workflow and activity
+    // implementations.
+    Worker worker = factory.newWorker(TASK_QUEUE);
+
+    // Workflows are stateful. So you need a type to create instances.
+    worker.registerWorkflowImplementationTypes(ShoppingCartWorkflowImpl.class);
+
+    // Start the worker created by this factory.
+    factory.start();
+
+    logger.info("Worker listening on task queue: {}.", TASK_QUEUE);
+
+    return worker;
   }
 }
