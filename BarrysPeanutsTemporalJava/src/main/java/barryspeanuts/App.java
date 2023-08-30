@@ -108,6 +108,9 @@ public class App {
       // Send a checkOut signal
       wf.checkOut(checkoutInfo);
 
+      //exit the workflow.
+      wf.exit();
+
     } catch (Exception e) {
       // Just rethrow for now
       throw e;
