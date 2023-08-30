@@ -1,11 +1,10 @@
 # Implementing the flattened style of the Actor Model under Temporal
 
-This project demonstrates executing a Temporal Workflow behavior only using signals. Taking a "signal only"
+This project demonstrates executing a Temporal Workflow behavior using signals only. Taking a "signal only"
 approach supports the principle of the Actor Model that states that communication between actors is facilitated via
-messaging only. Temporal supports signaling out of the box.
+messaging only. In Temporal a message is called a signal. Temporal supports signaling out of the box.
 
-Intrinsic to the Temporal framework are the Temporal Server and
-Worker.
+Intrinsic to the Temporal framework are the Temporal Server and Worker.
 
 You can think of the Temporal Server as a repository for storing information about the state of the workflow
 as well as being the message broker that manages messages relevant to the given workflow’s operation.
@@ -59,9 +58,6 @@ OS name: "linux", version: "5.19.0-46-generic", arch: "amd64", family: "unix"
 If you do not have the Temporal server installed, run the following command to install the Temporal CLI. The Temporal development server ships with the CLI.
 
 `curl -sSf https://temporal.download/cli.sh | sh`
-
-
-
 
 ---
 

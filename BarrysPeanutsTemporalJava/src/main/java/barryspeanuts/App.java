@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class App {
   static final String TASK_QUEUE = "BarryPeanutsTemporal";
+
   private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   @SuppressWarnings("CatchAndPrintStackTrace")
@@ -42,8 +43,9 @@ public class App {
 
     logger.info("Worker listening on task queue: {}.", TASK_QUEUE);
 
-    //Declare the WORKFLOW_ID
+    // Declare the WORKFLOW_ID
     String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
+
     // now we can start running instances of our workflow - its state will be persisted
     WorkflowOptions options =
         WorkflowOptions.newBuilder()
@@ -103,6 +105,7 @@ public class App {
               new BigDecimal("9.99"),
               new BigDecimal("1")));
 
+      // Send an  addItems signal
       wf.addItems(purchaseItems);
 
       // Get the customer information for the credit card
@@ -115,10 +118,8 @@ public class App {
       CheckoutInfo checkoutInfo =
           new CheckoutInfo(creditCard, customer.getAddress(), customer.getAddress(), "FEDEX");
 
+      // Send a checkOut signal
       wf.checkOut(checkoutInfo);
-
-      // Exit the workflow
-      wf.exit();
 
     } catch (Exception e) {
       // Just rethrow for now
