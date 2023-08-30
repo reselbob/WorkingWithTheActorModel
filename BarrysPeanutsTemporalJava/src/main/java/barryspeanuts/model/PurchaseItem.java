@@ -1,10 +1,9 @@
 package barryspeanuts.model;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class PurchaseItem {
-  private UUID id;
+  private String id;
   private Customer customer;
   private String description;
   private int packageSize;
@@ -20,7 +19,7 @@ public class PurchaseItem {
   public PurchaseItem() {}
 
   public PurchaseItem(
-      UUID id,
+      String id,
       Customer customer,
       String description,
       int packageSize,
@@ -35,7 +34,7 @@ public class PurchaseItem {
     this.total = quantity.multiply(price);
   }
 
-  public UUID getId() {
+  public String getId() {
     return id;
   }
 

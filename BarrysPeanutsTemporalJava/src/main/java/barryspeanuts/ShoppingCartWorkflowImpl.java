@@ -26,8 +26,8 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
   }
 
   @Override
-  public void addItems(List<PurchaseItem> purchaseItems) {
-    this.purchaseItems.addAll(purchaseItems);
+  public void addItem(PurchaseItem purchaseItem) {
+    this.purchaseItems.add(purchaseItem);
   }
 
   @Override

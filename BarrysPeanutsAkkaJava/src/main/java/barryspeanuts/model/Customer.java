@@ -1,9 +1,7 @@
 package barryspeanuts.model;
 
-import java.util.UUID;
-
 public class Customer {
-  private final UUID id;
+  private final String id;
   private final String firstName;
   private final String lastName;
   private final String email;
@@ -11,7 +9,7 @@ public class Customer {
   private final Address address;
 
   public Customer(
-      UUID id, String firstName, String lastName, String email, String phone, Address address) {
+      String id, String firstName, String lastName, String email, String phone, Address address) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -20,7 +18,7 @@ public class Customer {
     this.address = address;
   }
 
-  public UUID getId() {
+  public String getId() {
     return this.id;
   }
 

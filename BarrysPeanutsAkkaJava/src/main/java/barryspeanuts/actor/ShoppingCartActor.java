@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
 public class ShoppingCartActor extends AbstractActor {
@@ -29,15 +28,15 @@ public class ShoppingCartActor extends AbstractActor {
   @Override
   public Receive createReceive() {
     return receiveBuilder()
-        .match(AddItems.class, this::handleAddItems)
+        .match(AddItem.class, this::handleAddItem)
         .match(RemoveItem.class, this::handleRemoveItem)
         .match(EmptyCart.class, this::handleEmptyCart)
         .match(Checkout.class, this::handleCheckoutCart)
         .build();
   }
 
-  private void handleAddItems(AddItems msg) {
-    this.purchaseItems.addAll(msg.getPurchaseItems());
+  private void handleAddItem(AddItem msg) {
+    this.purchaseItems.add(msg.getPurchaseItem());
   }
 
   private void handleRemoveItem(RemoveItem msg) {
@@ -77,7 +76,7 @@ public class ShoppingCartActor extends AbstractActor {
 
     // Send a payment receipt to the customer as a fire and forget message
     CustomerActor.PaymentReceipt paymentReceipt =
-        new CustomerActor.PaymentReceipt(UUID.randomUUID(), customer, totalAmount);
+        new CustomerActor.PaymentReceipt("PR01", customer, totalAmount);
     ActorRef customerActor =
         this.actorSystem.actorOf(
             Props.create(CustomerActor.class, this.actorSystem), "customerActor");
@@ -94,22 +93,22 @@ public class ShoppingCartActor extends AbstractActor {
     // Send a shipping receipt to the customer as a fire and forget message
     CustomerActor.ShippingReceipt shippingReceipt =
         new CustomerActor.ShippingReceipt(
-            UUID.randomUUID(), customer, new Vector<>(purchaseItems), msg.getShipper());
+            "SR01", customer, new Vector<>(purchaseItems), msg.getShipper());
 
     customerActor.tell(shippingReceipt, customerActor);
 
     this.purchaseItems.clear();
   }
 
-  public static class AddItems {
-    private final List<PurchaseItem> purchaseItems;
+  public static class AddItem {
+    private final PurchaseItem purchaseItem;
 
-    public AddItems(List<PurchaseItem> purchaseItems) {
-      this.purchaseItems = purchaseItems;
+    public AddItem(PurchaseItem purchaseItem) {
+      this.purchaseItem = purchaseItem;
     }
 
-    public List<PurchaseItem> getPurchaseItems() {
-      return this.purchaseItems;
+    public PurchaseItem getPurchaseItem() {
+      return this.purchaseItem;
     }
   }
 

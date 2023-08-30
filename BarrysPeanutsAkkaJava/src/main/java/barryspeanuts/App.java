@@ -9,9 +9,6 @@ import barryspeanuts.model.CreditCard;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,61 +24,53 @@ public class App {
 
     Customer customer =
         new Customer(
-            UUID.randomUUID(), "Barney", "Rubble", "barney@rubble.com", "310 878 9999", address);
-
-    // Create some purchase items to add to the shopping cart
-    List<PurchaseItem> purchaseItems = new ArrayList<>();
-
-    PurchaseItem purchaseItem1 =
-        new PurchaseItem(
-            UUID.randomUUID(),
-            customer,
-            "Barry's Gourmet Peanuts Large",
-            5,
-            new BigDecimal("1"),
-            new BigDecimal("10.99"),
-            address,
-            address);
-
-    purchaseItems.add(purchaseItem1);
-
-    PurchaseItem purchaseItem2 =
-        new PurchaseItem(
-            UUID.randomUUID(),
-            customer,
-            "Barry's Gourmet Peanuts Medium",
-            3,
-            new BigDecimal("2"),
-            new BigDecimal("7.99"),
-            address,
-            address);
-
-    purchaseItems.add(purchaseItem2);
-
-    PurchaseItem purchaseItem3 =
-        new PurchaseItem(
-            UUID.randomUUID(),
-            customer,
-            "Barry's Gourmet Peanuts Small",
-            1,
-            new BigDecimal("3"),
-            new BigDecimal("4.99"),
-            address,
-            address);
-
-    purchaseItems.add(purchaseItem3);
+            "Customer01", "Barney", "Rubble", "barney@rubble.com", "310 878 9999", address);
 
     // Create the shopping cart actor
     ActorRef shoppingCartActor =
         system.actorOf(Props.create(ShoppingCartActor.class, system), "shoppingCartActor");
 
-    // Create an instance of the AddItems behavior
-    ShoppingCartActor.AddItems shoppingCartItems = new ShoppingCartActor.AddItems(purchaseItems);
+    // Create some purchase items to add them to the shopping cart
 
-    // Pass the AddItems message on to the ShoppingCartActor
-    shoppingCartActor.tell(shoppingCartItems, shoppingCartActor);
+    // Pass the AddItem message on to the ShoppingCartActor
+    ShoppingCartActor.AddItem shoppingCartItem =
+        new ShoppingCartActor.AddItem(
+            new PurchaseItem(
+                "PI01",
+                customer,
+                "Barry's Gourmet Peanuts Large",
+                5,
+                new BigDecimal("1"),
+                new BigDecimal("10.99"),
+                address,
+                address));
+    shoppingCartActor.tell(shoppingCartItem, shoppingCartActor);
 
-    // Prepare for checkout by creating the Credit Card as well as Billing and Shipping Addresses
+    shoppingCartItem =
+        new ShoppingCartActor.AddItem(
+            new PurchaseItem(
+                "PI02",
+                customer,
+                "Barry's Gourmet Peanuts Medium",
+                3,
+                new BigDecimal("2"),
+                new BigDecimal("7.99"),
+                address,
+                address));
+    shoppingCartActor.tell(shoppingCartItem, shoppingCartActor);
+
+    shoppingCartItem =
+        new ShoppingCartActor.AddItem(
+            new PurchaseItem(
+                "PI03",
+                customer,
+                "Barry's Gourmet Peanuts Small",
+                1,
+                new BigDecimal("3"),
+                new BigDecimal("4.99"),
+                address,
+                address));
+    shoppingCartActor.tell(shoppingCartItem, shoppingCartActor);
 
     // Get  the credit card
     String firstName = customer.getFirstName();

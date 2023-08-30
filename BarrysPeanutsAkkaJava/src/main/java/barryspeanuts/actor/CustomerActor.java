@@ -7,7 +7,6 @@ import akka.event.LoggingAdapter;
 import barryspeanuts.model.Customer;
 import barryspeanuts.model.PurchaseItem;
 import java.math.BigDecimal;
-import java.util.UUID;
 import java.util.Vector;
 
 public class CustomerActor extends AbstractActor {
@@ -31,7 +30,7 @@ public class CustomerActor extends AbstractActor {
 
   private void handleShippingReceipt(CustomerActor.ShippingReceipt msg) {
     this.log.info(
-        "Customer {}  received shipping confirmation id {} for {} purchase items shipped via {}.",
+        "Customer {} received shipping confirmation id {} for {} purchase items shipped via {}.",
         msg.getCustomer().getFirstName() + " " + msg.getCustomer().getLastName(),
         msg.getId(),
         msg.getPurchaseItems().size(),
@@ -47,20 +46,20 @@ public class CustomerActor extends AbstractActor {
   }
 
   public static class ShippingReceipt {
-    private final UUID id;
+    private final String id;
     private final Customer customer;
     private final Vector<PurchaseItem> purchaseItems;
     private final String shipper;
 
     public ShippingReceipt(
-        UUID id, Customer customer, Vector<PurchaseItem> purchaseItems, String shipper) {
+        String id, Customer customer, Vector<PurchaseItem> purchaseItems, String shipper) {
       this.id = id;
       this.customer = customer;
       this.purchaseItems = purchaseItems;
       this.shipper = shipper;
     }
 
-    public UUID getId() {
+    public String getId() {
       return this.id;
     }
 
@@ -78,17 +77,17 @@ public class CustomerActor extends AbstractActor {
   }
 
   public static class PaymentReceipt {
-    private final UUID id;
+    private final String id;
     private final Customer customer;
     private final BigDecimal purchaseTotal;
 
-    public PaymentReceipt(UUID id, Customer customer, BigDecimal purchaseTotal) {
+    public PaymentReceipt(String id, Customer customer, BigDecimal purchaseTotal) {
       this.id = id;
       this.customer = customer;
       this.purchaseTotal = purchaseTotal;
     }
 
-    public UUID getId() {
+    public String getId() {
       return this.id;
     }
 

@@ -9,9 +9,6 @@ import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +41,7 @@ public class App {
     logger.info("Worker listening on task queue: {}.", TASK_QUEUE);
 
     // Declare the WORKFLOW_ID
-    String WORKFLOW_ID = TASK_QUEUE + "-" + UUID.randomUUID();
+    String WORKFLOW_ID = TASK_QUEUE + "-" + "01";
 
     // now we can start running instances of our workflow - its state will be persisted
     WorkflowOptions options =
@@ -66,47 +63,37 @@ public class App {
 
       Customer customer =
           new Customer(
-              UUID.randomUUID(),
-              "Josiah",
-              "Bartlet",
-              "prez@whitehouse.gove",
-              "202 456 1414",
-              address);
+              "Customer01", "Josiah", "Bartlet", "prez@whitehouse.gove", "202 456 1414", address);
 
       WorkflowClient.start(wf::startWorkflow);
 
-      // Create purchase items and add them to the Shopping Cart
-      List<PurchaseItem> purchaseItems = new ArrayList<>();
-
-      purchaseItems.add(
+      // Create purchase items and add them to the Shopping Cart via a signal
+      wf.addItem(
           new PurchaseItem(
-              UUID.randomUUID(),
+              "PI01",
               customer,
               "Barry's Deluxe Peanuts:",
               3,
               new BigDecimal("12.99"),
               new BigDecimal("5")));
 
-      purchaseItems.add(
+      wf.addItem(
           new PurchaseItem(
-              UUID.randomUUID(),
+              "PI02",
               customer,
               "Barry's Smoked Peanuts",
               5,
               new BigDecimal("25.99"),
               new BigDecimal("2")));
 
-      purchaseItems.add(
+      wf.addItem(
           new PurchaseItem(
-              UUID.randomUUID(),
+              "PI03",
               customer,
               "Barry's Soft Shell Peanuts",
               1,
               new BigDecimal("9.99"),
               new BigDecimal("1")));
-
-      // Send an  addItems signal
-      wf.addItems(purchaseItems);
 
       // Get the customer information for the credit card
       String firstName = customer.getFirstName();

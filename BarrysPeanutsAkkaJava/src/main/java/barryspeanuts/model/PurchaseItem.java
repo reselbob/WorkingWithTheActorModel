@@ -2,10 +2,9 @@ package barryspeanuts.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 public class PurchaseItem {
-  private final UUID id;
+  private final String id;
   private final Customer customer;
   private final String description;
   private final int packageSize;
@@ -16,7 +15,7 @@ public class PurchaseItem {
   private Date shipDate;
 
   public PurchaseItem(
-      UUID id,
+      String id,
       Customer customer,
       String description,
       int packageSize,
@@ -35,7 +34,7 @@ public class PurchaseItem {
     this.shipDate = null;
   }
 
-  public UUID getId() {
+  public String getId() {
     return this.id;
   }
 
