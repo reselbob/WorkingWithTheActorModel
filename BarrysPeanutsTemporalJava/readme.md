@@ -80,11 +80,19 @@ Run the following command in a new terminal window to create a fresh Maven envir
 mvn clean package install
 ```
 
-## (5) Start the application
+## (5) Start the WorkerRunner
 
-In that same terminal window run:
+In the terminal window run:
 
 ```bash
-mvn exec:java -Dexec.mainClass="barryspeanuts.App"
+cd  BarrysPeanutsTemporalJava && mvn exec:java -Dexec.mainClass="barryspeanuts.WorkerRunner"
+```
+
+## (6) Start the WorkflowRunner
+
+In another terminal window run:
+
+```bash
+cd  BarrysPeanutsTemporalJava && mvn exec:java -Dexec.mainClass="barryspeanuts.WorkflowRunner"
 ```
 
