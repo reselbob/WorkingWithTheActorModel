@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WorkflowRunner {
-  static final String TASK_QUEUE = "BarryPeanuts";
+  static final String TASK_QUEUE = "BarrysPeanuts";
 
   private static final Logger logger = LoggerFactory.getLogger(WorkflowRunner.class);
 

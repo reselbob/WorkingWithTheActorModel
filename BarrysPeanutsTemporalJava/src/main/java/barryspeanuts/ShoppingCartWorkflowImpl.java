@@ -69,7 +69,7 @@ public class ShoppingCartWorkflowImpl implements ShoppingCartWorkflow {
         this.purchaseItems.toArray().length);
   }
 
-  /** This is convenience signal to shut down the workflow */
+  /** This is covenience signal to shut down the workflow */
   @Override
   public void exit() {
     logger.info("Exiting the shopping cart");
