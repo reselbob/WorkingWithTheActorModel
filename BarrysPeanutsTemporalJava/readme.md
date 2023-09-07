@@ -55,9 +55,12 @@ OS name: "linux", version: "5.19.0-46-generic", arch: "amd64", family: "unix"
 
 ## (2) Download and install the Temporal CLI (which includes the server)
 
-If you do not have the Temporal server installed, run the following command to install the Temporal CLI. The Temporal development server ships with the CLI.
+If you do not have the Temporal server installed, click the link below to go to the Temporal documentation that has the
+instructions for installing the Temporal CLI.
 
-`curl -sSf https://temporal.download/cli.sh | sh`
+[https://docs.temporal.io/cli/#installation](https://docs.temporal.io/cli/#installation)
+
+The Temporal development server ships with the CLI.
 
 ---
 
