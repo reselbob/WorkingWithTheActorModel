@@ -11,8 +11,7 @@ as well as being the message broker that manages messages relevant to the given 
 The Worker is the component that receives messages and then executes behavior defined in the workflow according to the
 message received.
 
-Applications, by way of another Temporal component called a Client send signals relevant to the particular Temporal workflow to the Temporal Server. (Under
-Temporal, a message is called a signal.) The Temporal Worker listens on a task queue hosted by the Temporal Server for signals relevant to the given workflow.
+An application, by way of another Temporal component called a Client send signals relevant to the particular Temporal workflow to the Temporal Server. The Temporal Worker listens on a task queue hosted by the Temporal Server for signals relevant to the given workflow.
 The Worker receives a signal from the task queue and then forwards it on to the Workflow code. The Temporal workflow responds to the signal received. (See Figure 1.)
 
 | ![Temporal Architecture](./images/temp-arch-01.jpg)                                 |
