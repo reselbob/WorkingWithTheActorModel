@@ -1,12 +1,19 @@
-# Implementing a flattened version of the Actor model under Akka
+# Implementing the Actor model under Akka
 
 This project demonstrates an Akka application, written in Java that simulates the activities of an e-commerce shopping cart.
 
-Figure 1 below illustrates the organization and operation of the demonstration project.
+Figure 1 below illustrates the organization and operation of the demonstration project. The client/controller component named `App` sends a 
+message of type `AddItem` to the `ShoppingCartActor` to a add purchase item(s) to the shopping cart as shown in Figure 1, callout 1.
 
-| ![Flat Style](./images/TBP.png)                      |
-|------------------------------------------------------|
-| Figure 1: The Akka implementation of the Actor Model |
+To instigate the checkout process, the `App` sends a message of type `Checkout` to the `ShoppingCartActor`. (See Figure 1, callout 2.)
+The `ShoppingCartActor` executes payment and shipping behavior as part of the checkout process. At the end of the payment logic,
+the `ShoppingCartActor` sends a fire-and-forget message of type `PaymentReceipt` to the `CustomerActor`. (See Figure 1, callout 3a.)
+
+At the end of shipping logic the `ShoppingCartActor` sends a fire-and-forget message of type `ShippingReceipt` to the `CustomerActor`. (See Figure 1, callout 3b.)
+
+| ![Akka Architecture](./images/app-controller-akka.jpg)                              |
+|-------------------------------------------------------------------------------------|
+| Figure 1: The Akka implementation of the Actor Model for the demonstration project. |
 
 # Running the code:
 
