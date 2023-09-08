@@ -1,4 +1,4 @@
-# Implementing the flattened style of the Actor Model under Temporal
+# Implementing the Actor Model under Temporal
 
 This project demonstrates executing a Temporal Workflow behavior using signals only. Taking a "signal only"
 approach supports the principle of the Actor Model that states that communication between actors is facilitated via
