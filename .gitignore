@@ -1,6 +1,7 @@
 #IntelliJ assets
 target
 .idea
+lib
 
 
 # Compiled class file
